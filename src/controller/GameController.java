@@ -1,15 +1,17 @@
 package controller;
 
 import listener.GameListener;
-import model.Constant;
-import model.Chessboard;
-import model.ChessboardPoint;
+import model.*;
 import view.CellComponent;
 import view.ChessComponent;
-import view.ChessGameFrame;
 import view.ChessboardComponent;
 
 import javax.swing.*;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Controller is the connection between model and view,
@@ -19,7 +21,8 @@ import javax.swing.*;
  * onPlayerClickChessPiece()]
  */
 public class GameController implements GameListener {
-
+    //修改了构造方法，获取size
+    private final int CHESS_SIZE;
     private Chessboard model;
     private ChessboardComponent view;
 
@@ -40,10 +43,10 @@ public class GameController implements GameListener {
         this.statusLabel = statusLabel;
     }
 
-    public GameController(ChessboardComponent view, Chessboard model) {
+    public GameController(int height, ChessboardComponent view, Chessboard model) {
+        CHESS_SIZE = (height * 4 / 5) / 9;
         this.view = view;
         this.model = model;
-
         view.registerController(this);
         view.initiateChessComponent(model);
         view.repaint();
@@ -53,8 +56,12 @@ public class GameController implements GameListener {
         for (int i = 0; i < Constant.CHESSBOARD_ROW_SIZE.getNum(); i++) {
             for (int j = 0; j < Constant.CHESSBOARD_COL_SIZE.getNum(); j++) {
                 //todo: complete it when restart game
+                model.getGrid()[i][j].setPiece(new ChessPiece( Util.RandomPick(new String[]{"💎", "⚪", "▲", "🔶"})));
             }
         }
+        view.removeAllChessComponentsAtGrids();
+        view.initiateChessComponent(model);
+        view.repaint();
     }
 
     // click an empty cell
@@ -66,6 +73,17 @@ public class GameController implements GameListener {
     public void onPlayerSwapChess() {
         // TODO: Init your swap function here.
         System.out.println("Implement your swap here.");
+        if(selectedPoint!=null && selectedPoint2!=null && model.canSwap(selectedPoint,selectedPoint2)){
+            model.swapChessPiece(selectedPoint,selectedPoint2);
+            ChessComponent chess1 = view.removeChessComponentAtGrid(selectedPoint);
+            ChessComponent chess2 = view.removeChessComponentAtGrid(selectedPoint2);
+            view.setChessComponentAtGrid(selectedPoint,chess2);
+            view.setChessComponentAtGrid(selectedPoint2,chess1);
+            chess1.repaint();
+            chess2.repaint();
+            selectedPoint = null;
+            selectedPoint2 = null;
+        }
     }
 
     @Override
@@ -148,4 +166,34 @@ public class GameController implements GameListener {
 
     }
 
+    public void SaveGameToFile(String path) {
+        List<String> saveLines = model.convertBoardToList();
+        try {
+            Files.write(Path.of(path),saveLines);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void loadGameFromFile(String path) {
+        view.removeAllChessComponentsAtGrids();
+        StringBuilder sb = new StringBuilder();
+        String file;
+        try {
+            file = Files.readString(Path.of(path));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        String fl[] = file.split("\n");
+        for (int i =0;i<Constant.CHESSBOARD_ROW_SIZE.getNum();i++){
+            String[] line = fl[i].split(" ");
+            for (int j=0;j<Constant.CHESSBOARD_COL_SIZE.getNum();j++){
+                model.setChessPiece(new ChessboardPoint(i,j),new ChessPiece(line[j]));
+                view.setChessComponentAtGrid(new ChessboardPoint(i,j),new ChessComponent(CHESS_SIZE,new ChessPiece(line[j])));
+            }
+        }
+        view.initiateChessComponent(model);
+        view.repaint();
+
+    }
 }

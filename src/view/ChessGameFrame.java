@@ -35,10 +35,11 @@ public class ChessGameFrame extends JFrame {
 
         addChessboard();
         addLabel();
-        addHelloButton();
+        addRestartButton();
         addSwapConfirmButton();
         addNextStepButton();
         addLoadButton();
+        addSaveButton();
     }
 
     public ChessboardComponent getChessboardComponent() {
@@ -89,10 +90,11 @@ public class ChessGameFrame extends JFrame {
      * 在游戏面板中增加一个按钮，如果按下的话就会显示Hello, world!
      */
 
-    private void addHelloButton() {
-        JButton button = new JButton("Hello");
+    private void addRestartButton() {
+        JButton button = new JButton("Restart");
         button.addActionListener(e -> {
-            JOptionPane.showMessageDialog(this, "Show hello world");
+            //JOptionPane.showMessageDialog(this, "Show hello world");
+            gameController.initialize();
         });
         button.setLocation(HEIGTH, HEIGTH / 10 + 120);
         button.setSize(200, 60);
@@ -129,7 +131,21 @@ public class ChessGameFrame extends JFrame {
             System.out.println("Click load");
             String path = JOptionPane.showInputDialog(this, "Input Path here");
             System.out.println(path);
-//            gameController.loadGameFromFile(path);
+            gameController.loadGameFromFile(path);
+        });
+    }
+    private void addSaveButton() {
+        JButton button = new JButton("Save");
+        button.setLocation(HEIGTH, HEIGTH / 10 + 440);
+        button.setSize(200, 60);
+        button.setFont(new Font("Rockwell", Font.BOLD, 20));
+        add(button);
+
+        button.addActionListener(e -> {
+            System.out.println("Click save");
+            String path = JOptionPane.showInputDialog(this, "Input Path here");
+            System.out.println(path);
+            gameController.SaveGameToFile(path);
         });
     }
 
