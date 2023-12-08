@@ -73,7 +73,7 @@ public class GameController implements GameListener {
     public void onPlayerSwapChess() {
         // TODO: Init your swap function here.
         System.out.println("Implement your swap here.");
-        if(selectedPoint!=null && selectedPoint2!=null && model.canSwap(selectedPoint,selectedPoint2)){
+        if(selectedPoint!=null && selectedPoint2!=null){
             model.swapChessPiece(selectedPoint,selectedPoint2);
             ChessComponent chess1 = view.removeChessComponentAtGrid(selectedPoint);
             ChessComponent chess2 = view.removeChessComponentAtGrid(selectedPoint2);
@@ -81,6 +81,25 @@ public class GameController implements GameListener {
             view.setChessComponentAtGrid(selectedPoint2,chess1);
             chess1.repaint();
             chess2.repaint();
+        }
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        if (!model.canSwap(selectedPoint,selectedPoint2, model.getGrid())){
+            model.swapChessPiece(selectedPoint,selectedPoint2);
+            ChessComponent chess1 = view.removeChessComponentAtGrid(selectedPoint);
+            ChessComponent chess2 = view.removeChessComponentAtGrid(selectedPoint2);
+            view.setChessComponentAtGrid(selectedPoint,chess2);
+            view.setChessComponentAtGrid(selectedPoint2,chess1);
+            chess1.repaint();
+            chess2.repaint();
+            selectedPoint = null;
+            selectedPoint2 = null;
+            System.out.println("can't swap");
+        }
+        else{
             selectedPoint = null;
             selectedPoint2 = null;
         }
