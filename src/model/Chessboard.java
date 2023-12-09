@@ -29,7 +29,7 @@ public class Chessboard {
         }
     }
 
-    private void initPieces() {
+    public void initPieces() {
         for (int i = 0; i < Constant.CHESSBOARD_ROW_SIZE.getNum(); i++) {
             for (int j = 0; j < Constant.CHESSBOARD_COL_SIZE.getNum(); j++) {
                 grid[i][j].setPiece(new ChessPiece( Util.RandomPick(new String[]{"💎", "⚪", "▲", "🔶"})));

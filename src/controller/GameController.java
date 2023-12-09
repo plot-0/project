@@ -53,12 +53,7 @@ public class GameController implements GameListener {
     }
 
     public void initialize() {
-        for (int i = 0; i < Constant.CHESSBOARD_ROW_SIZE.getNum(); i++) {
-            for (int j = 0; j < Constant.CHESSBOARD_COL_SIZE.getNum(); j++) {
-                //todo: complete it when restart game
-                model.getGrid()[i][j].setPiece(new ChessPiece( Util.RandomPick(new String[]{"💎", "⚪", "▲", "🔶"})));
-            }
-        }
+        model.initPieces();
         view.removeAllChessComponentsAtGrids();
         view.initiateChessComponent(model);
         view.repaint();
