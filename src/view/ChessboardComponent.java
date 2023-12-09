@@ -96,6 +96,10 @@ public class ChessboardComponent extends JComponent {
         chess.setSelected(false);
         return chess;
     }
+    public ChessComponent getChessComponentAtGrid(ChessboardPoint point){
+        ChessComponent chess = (ChessComponent) getGridComponentAt(point).getComponents()[0];
+        return chess;
+    }
 
     public CellComponent getGridComponentAt(ChessboardPoint point) {
         return gridComponents[point.getRow()][point.getCol()];

@@ -2,7 +2,6 @@ package model;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 /**
  * This class store the real chess information.
@@ -154,6 +153,35 @@ public class Chessboard {
             }
         }
         return num;
+    }
+    public int nullInCol(Cell[] col){
+        int num =0;
+        for (int i =0;i<col.length;i++){
+            if (col[i].getPiece()==null){
+                num++;
+            }
+        }
+        return num;
+    }
+    public ArrayList<ChessboardPoint> nullPointInCol(Cell[] colcomponent, int col){
+        ArrayList<ChessboardPoint> points = new ArrayList<ChessboardPoint>();
+        for (int i =0;i<colcomponent.length;i++){
+            if (colcomponent[i] == null){
+                points.add(new ChessboardPoint(i,col));
+            }
+        }
+        return points;
+    }
+    public ArrayList<ChessboardPoint> nullPoint(Cell[][] grid){
+        ArrayList<ChessboardPoint> points = new ArrayList<ChessboardPoint>();
+        for (int i =0;i<Constant.CHESSBOARD_ROW_SIZE.getNum();i++){
+            for (int j =0;j<Constant.CHESSBOARD_COL_SIZE.getNum();j++){
+                if (grid[i][j].getPiece() == null){
+                    points.add(new ChessboardPoint(i,j));
+                }
+            }
+        }
+        return points;
     }
 
     public Cell[][] getGrid() {

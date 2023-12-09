@@ -10,7 +10,7 @@ import javax.swing.*;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,6 +25,7 @@ public class GameController implements GameListener {
     private final int CHESS_SIZE;
     private Chessboard model;
     private ChessboardComponent view;
+    public static int state = 0;
 
 
     // Record whether there is a selected piece before
@@ -58,7 +59,77 @@ public class GameController implements GameListener {
         view.initiateChessComponent(model);
         view.repaint();
     }
-
+    public void eliminate(int[][] search){
+        for (int i = 0; i < Constant.CHESSBOARD_ROW_SIZE.getNum(); i++) {
+            for (int j = 0; j < Constant.CHESSBOARD_COL_SIZE.getNum(); j++) {
+                if (search[i][j]==1){
+                    model.removeChessPiece(new ChessboardPoint(i,j));
+                    model.setChessPiece(new ChessboardPoint(i,j),null);
+                    view.removeChessComponentAtGrid(new ChessboardPoint(i,j));
+                    view.repaint();
+                }
+            }
+        }
+    }
+    public Cell[][] reverse(Cell[][] grid){
+        Cell[][] reverse = new Cell[Constant.CHESSBOARD_COL_SIZE.getNum()][Constant.CHESSBOARD_ROW_SIZE.getNum()];
+        for (int j = 0; j <Constant.CHESSBOARD_COL_SIZE.getNum(); j++) {
+            for (int i = 0;i<Constant.CHESSBOARD_ROW_SIZE.getNum(); i++) {
+                reverse[j][i] = model.getGridAt(new ChessboardPoint(i,j));
+            }
+        }
+        return reverse;
+    }
+    //降落
+    public void fall(){
+        Cell[][] reverse = reverse(model.getGrid());
+        for (int j = 0; j <Constant.CHESSBOARD_COL_SIZE.getNum(); j++) {
+            for (int e=0;e< model.nullInCol(reverse[j]);e++){
+                for (int i = Constant.CHESSBOARD_ROW_SIZE.getNum()-2; i >=0 ; i--) {
+                    compare(new ChessboardPoint(i,j));
+                }
+            }
+        }
+    }
+    //检测到下方一格为空白时降落一格
+    public void compare(ChessboardPoint point){
+        if (model.getChessPieceAt(point)!=null && model.getChessPieceAt(new ChessboardPoint(point.getRow()+1, point.getCol()))==null){
+            ChessComponent chess1 = view.removeChessComponentAtGrid(point);
+            model.swapChessPiece(point,new ChessboardPoint(point.getRow()+1, point.getCol()));
+            view.setChessComponentAtGrid(new ChessboardPoint(point.getRow()+1, point.getCol()),chess1);
+            chess1.repaint();
+            view.getGridComponentAt(point).repaint();
+        }
+    }
+    public void regenerate(Cell[][] grid){
+        int find = 0;
+        ArrayList<ChessboardPoint> oldpoints =new ArrayList<>();
+        ArrayList<ChessboardPoint> points = model.nullPoint(grid);
+        for (int e=0;e<points.size();e++){
+            ChessPiece piece = new ChessPiece(Util.RandomPick(new String[]{"💎", "⚪", "▲", "🔶"}));
+            ChessComponent chess = new ChessComponent(CHESS_SIZE,piece);
+            model.getGridAt(points.get(e)).setPiece(piece);
+            for (int i = 0; i < Constant.CHESSBOARD_ROW_SIZE.getNum(); i++) {
+                for (int j = 0; j < Constant.CHESSBOARD_COL_SIZE.getNum(); j++) {
+                    if (!oldpoints.contains(new ChessboardPoint(i,j)) && !points.contains(new ChessboardPoint(i,j))){
+                        if (view.getChessComponentAtGrid(new ChessboardPoint(i,j)).chessPiece.getName().equals(piece.getName())){
+                            chess = view.getChessComponentAtGrid(new ChessboardPoint(i,j));
+                            oldpoints.add(new ChessboardPoint(i,j));
+                            find = 1;
+                            break;
+                        }
+                    }
+                }
+                if (find == 1){
+                    break;
+                }
+            }
+            view.setChessComponentAtGrid(points.get(e),chess);
+            System.out.println(view.getChessComponentAtGrid(points.get(e)).chessPiece.getName());
+            chess.repaint();
+            find = 0;
+        }
+    }
     // click an empty cell
     @Override
     public void onPlayerClickCell(ChessboardPoint point, CellComponent component) {
@@ -95,6 +166,7 @@ public class GameController implements GameListener {
             System.out.println("can't swap");
         }
         else{
+            eliminate(model.search(model.getGrid()));
             selectedPoint = null;
             selectedPoint2 = null;
         }
@@ -106,7 +178,14 @@ public class GameController implements GameListener {
         System.out.println("Implement your next step here.");
         score++;
         this.statusLabel.setText("Score:" + score);
-
+        if (state == 0){
+            fall();
+            state = 1;
+        }
+        else{
+            regenerate(model.getGrid());
+            state = 0;
+        }
     }
 
     // click a cell with a chess
