@@ -25,7 +25,7 @@ public class GameController implements GameListener {
     private final int CHESS_SIZE;
     private Chessboard model;
     private ChessboardComponent view;
-    public static int state = 0;
+    public static int fallstate = 0;
 
 
     // Record whether there is a selected piece before
@@ -64,12 +64,14 @@ public class GameController implements GameListener {
             for (int j = 0; j < Constant.CHESSBOARD_COL_SIZE.getNum(); j++) {
                 if (search[i][j]==1){
                     model.removeChessPiece(new ChessboardPoint(i,j));
-                    model.setChessPiece(new ChessboardPoint(i,j),null);
+                    //model.setChessPiece(new ChessboardPoint(i,j),null);
                     view.removeChessComponentAtGrid(new ChessboardPoint(i,j));
                     view.repaint();
                 }
             }
         }
+        score += 10*model.nullPoints(model.getGrid()).size();
+        fallstate = 1;
     }
     public Cell[][] reverse(Cell[][] grid){
         Cell[][] reverse = new Cell[Constant.CHESSBOARD_COL_SIZE.getNum()][Constant.CHESSBOARD_ROW_SIZE.getNum()];
@@ -102,7 +104,7 @@ public class GameController implements GameListener {
         }
     }
     public void regenerate(Cell[][] grid){
-        ArrayList<ChessboardPoint> points = model.nullPoint(grid);
+        ArrayList<ChessboardPoint> points = model.nullPoints(grid);
         for (int e=0;e<points.size();e++){
             ChessPiece piece = new ChessPiece(Util.RandomPick(new String[]{"💎", "⚪", "▲", "🔶"}));
             ChessComponent chess = new ChessComponent(CHESS_SIZE,piece);
@@ -147,7 +149,7 @@ public class GameController implements GameListener {
             System.out.println("can't swap");
         }
         else{
-            eliminate(model.search(model.getGrid()));
+            eliminate(model.search());
             selectedPoint = null;
             selectedPoint2 = null;
         }
@@ -156,18 +158,20 @@ public class GameController implements GameListener {
     @Override
     public void onPlayerNextStep() {
         // TODO: Init your next step function here.
-        System.out.println("Implement your next step here.");
-        score++;
         this.statusLabel.setText("Score:" + score);
-        if (state == 0){
+        if (model.eliminateNum(model.getGrid())!=0){
+            eliminate(model.search());
+        }
+        else if (fallstate == 1){
             fall();
             view.repaint();
-            state = 1;
+            System.out.println("fall");
+            fallstate = 0;
         }
         else{
             regenerate(model.getGrid());
+            System.out.println("regenerate");
             view.repaint();
-            state = 0;
         }
     }
 

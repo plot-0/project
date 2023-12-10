@@ -2,6 +2,7 @@ package model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * This class store the real chess information.
@@ -76,7 +77,7 @@ public class Chessboard {
     }
     public boolean canSwap(ChessboardPoint point1,ChessboardPoint point2,Cell[][] grid){
         //todo:  check
-        int [][] eliminate = search(grid);
+        int [][] eliminate = search();
         if (eliminate[point1.getRow()][point1.getCol()]==1){
             return true;
         }
@@ -87,7 +88,7 @@ public class Chessboard {
             return false;
         }
     }
-    public int[][] search(Cell[][] grid){
+    public int[][] search(){
         int sum = 0;
         //打墙,-1表示外层的墙
         String[][] check= new String[Constant.CHESSBOARD_ROW_SIZE.getNum()+4][Constant.CHESSBOARD_COL_SIZE.getNum()+4];
@@ -98,6 +99,10 @@ public class Chessboard {
         }
         for (int i=2;i<Constant.CHESSBOARD_ROW_SIZE.getNum()+2;i++){
             for (int j =2;j<Constant.CHESSBOARD_COL_SIZE.getNum()+2;j++){
+                if (grid[i-2][j-2].getPiece()==null){
+                    check[i][j]="-1";
+                    continue;
+                }
                 check[i][j] = grid[i-2][j-2].getPiece().getName();
                 sum++;
             }
@@ -110,29 +115,33 @@ public class Chessboard {
                 if (sum==0){
                     break;
                 }
+                if (Objects.equals(check[i][j], "-1")){
+                    eliminate[i-2][j-2] = 0;
+                    continue;
+                }
                 //向上
                 if (check[i][j].equals(check[i-1][j]) && check[i-1][j].equals(check[i-2][j])){
                     eliminate[i-2][j-2] = 1;
-                    eliminate[i-3][j-2] =1;
-                    eliminate[i-4][j-2] = 1;
                 }
                 //向下
                 if (check[i][j].equals(check[i+1][j]) && check[i+1][j].equals(check[i+2][j])){
                     eliminate[i-2][j-2] = 1;
-                    eliminate[i-1][j-2] =1;
-                    eliminate[i][j-2] = 1;
                 }
                 //向右
                 if (check[i][j].equals(check[i][j+1]) && check[i][j+1].equals(check[i][j+2])){
                     eliminate[i-2][j-2] = 1;
-                    eliminate[i-2][j-1] =1;
-                    eliminate[i-2][j] = 1;
                 }
                 //向左
                 if (check[i][j].equals(check[i][j-1]) && check[i][j-1].equals(check[i][j-2])){
                     eliminate[i-2][j-2] = 1;
-                    eliminate[i-2][j-3] =1;
-                    eliminate[i-2][j-4] = 1;
+                }
+                //十字上下
+                if (check[i][j].equals(check[i-1][j]) && check[i][j].equals(check[i+1][j])){
+                    eliminate[i-2][j-2] = 1;
+                }
+                //十字左右
+                if (check[i][j].equals(check[i][j-1]) && check[i][j].equals(check[i][j+1])){
+                    eliminate[i-2][j-2] = 1;
                 }
             }
             if (sum==0){
@@ -144,7 +153,7 @@ public class Chessboard {
     //检测图是否有效
     public int eliminateNum(Cell[][] grid){
         int num = 0;
-        int[][] eliminate = search(grid);
+        int[][] eliminate = search();
         for (int i = 0; i < Constant.CHESSBOARD_ROW_SIZE.getNum(); i++) {
             for (int j = 0; j < Constant.CHESSBOARD_COL_SIZE.getNum(); j++) {
                 if (eliminate[i][j]==1){
@@ -172,7 +181,7 @@ public class Chessboard {
         }
         return points;
     }
-    public ArrayList<ChessboardPoint> nullPoint(Cell[][] grid){
+    public ArrayList<ChessboardPoint> nullPoints(Cell[][] grid){
         ArrayList<ChessboardPoint> points = new ArrayList<ChessboardPoint>();
         for (int i =0;i<Constant.CHESSBOARD_ROW_SIZE.getNum();i++){
             for (int j =0;j<Constant.CHESSBOARD_COL_SIZE.getNum();j++){
