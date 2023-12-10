@@ -208,7 +208,7 @@ public class Chessboard {
                     sb.append(piece.getName()).append(" ");
                 }
                 else{
-                    sb.append("0 ");
+                    sb.append(" ");
                 }
             }
             saveLines.add(sb.toString());

@@ -12,6 +12,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Controller is the connection between model and view,
@@ -25,7 +26,7 @@ public class GameController implements GameListener {
     private final int CHESS_SIZE;
     private Chessboard model;
     private ChessboardComponent view;
-    public static int fallstate = 0;
+    public static int fallstate = 1;
 
 
     // Record whether there is a selected piece before
@@ -268,12 +269,15 @@ public class GameController implements GameListener {
         for (int i =0;i<Constant.CHESSBOARD_ROW_SIZE.getNum();i++){
             String[] line = fl[i].split(" ");
             for (int j=0;j<Constant.CHESSBOARD_COL_SIZE.getNum();j++){
-                model.setChessPiece(new ChessboardPoint(i,j),new ChessPiece(line[j]));
-                view.setChessComponentAtGrid(new ChessboardPoint(i,j),new ChessComponent(CHESS_SIZE,new ChessPiece(line[j])));
+                if (Objects.equals(line[j], "")){
+                    model.setChessPiece(new ChessboardPoint(i,j),null);
+                }
+                else{
+                    model.setChessPiece(new ChessboardPoint(i,j),new ChessPiece(line[j]));
+                }
             }
         }
         view.initiateChessComponent(model);
         view.repaint();
-
     }
 }
