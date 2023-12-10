@@ -98,6 +98,7 @@ public class ChessboardComponent extends JComponent {
     }
     public ChessComponent getChessComponentAtGrid(ChessboardPoint point){
         ChessComponent chess = (ChessComponent) getGridComponentAt(point).getComponents()[0];
+        getGridComponentAt(point).revalidate();
         return chess;
     }
 

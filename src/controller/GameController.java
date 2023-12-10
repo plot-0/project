@@ -102,32 +102,13 @@ public class GameController implements GameListener {
         }
     }
     public void regenerate(Cell[][] grid){
-        int find = 0;
-        ArrayList<ChessboardPoint> oldpoints =new ArrayList<>();
         ArrayList<ChessboardPoint> points = model.nullPoint(grid);
         for (int e=0;e<points.size();e++){
             ChessPiece piece = new ChessPiece(Util.RandomPick(new String[]{"💎", "⚪", "▲", "🔶"}));
             ChessComponent chess = new ChessComponent(CHESS_SIZE,piece);
             model.getGridAt(points.get(e)).setPiece(piece);
-            for (int i = 0; i < Constant.CHESSBOARD_ROW_SIZE.getNum(); i++) {
-                for (int j = 0; j < Constant.CHESSBOARD_COL_SIZE.getNum(); j++) {
-                    if (!oldpoints.contains(new ChessboardPoint(i,j)) && !points.contains(new ChessboardPoint(i,j))){
-                        if (view.getChessComponentAtGrid(new ChessboardPoint(i,j)).chessPiece.getName().equals(piece.getName())){
-                            chess = view.getChessComponentAtGrid(new ChessboardPoint(i,j));
-                            oldpoints.add(new ChessboardPoint(i,j));
-                            find = 1;
-                            break;
-                        }
-                    }
-                }
-                if (find == 1){
-                    break;
-                }
-            }
-            view.setChessComponentAtGrid(points.get(e),chess);
-            System.out.println(view.getChessComponentAtGrid(points.get(e)).chessPiece.getName());
-            chess.repaint();
-            find = 0;
+            view.initiateChessComponent(model);
+            view.getChessComponentAtGrid(points.get(e)).repaint();
         }
     }
     // click an empty cell
@@ -180,10 +161,12 @@ public class GameController implements GameListener {
         this.statusLabel.setText("Score:" + score);
         if (state == 0){
             fall();
+            view.repaint();
             state = 1;
         }
         else{
             regenerate(model.getGrid());
+            view.repaint();
             state = 0;
         }
     }
