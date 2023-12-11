@@ -27,6 +27,7 @@ public class GameController implements GameListener {
     private Chessboard model;
     private ChessboardComponent view;
     public static int fallstate = 1;
+    public static int swapstate = 1;
 
 
     // Record whether there is a selected piece before
@@ -61,18 +62,19 @@ public class GameController implements GameListener {
         view.repaint();
     }
     public void eliminate(int[][] search){
+        score += 10*model.eliminateNum(model.getGrid());
         for (int i = 0; i < Constant.CHESSBOARD_ROW_SIZE.getNum(); i++) {
             for (int j = 0; j < Constant.CHESSBOARD_COL_SIZE.getNum(); j++) {
                 if (search[i][j]==1){
                     model.removeChessPiece(new ChessboardPoint(i,j));
-                    //model.setChessPiece(new ChessboardPoint(i,j),null);
                     view.removeChessComponentAtGrid(new ChessboardPoint(i,j));
                     view.repaint();
                 }
             }
         }
-        score += 10*model.nullPoints(model.getGrid()).size();
         fallstate = 1;
+        swapstate = 0;
+        this.statusLabel.setText("Score:" + score);
     }
     public Cell[][] reverse(Cell[][] grid){
         Cell[][] reverse = new Cell[Constant.CHESSBOARD_COL_SIZE.getNum()][Constant.CHESSBOARD_ROW_SIZE.getNum()];
@@ -123,7 +125,7 @@ public class GameController implements GameListener {
     public void onPlayerSwapChess() {
         // TODO: Init your swap function here.
         System.out.println("Implement your swap here.");
-        if(selectedPoint!=null && selectedPoint2!=null){
+        if(selectedPoint!=null && selectedPoint2!=null && swapstate == 1){
             model.swapChessPiece(selectedPoint,selectedPoint2);
             ChessComponent chess1 = view.removeChessComponentAtGrid(selectedPoint);
             ChessComponent chess2 = view.removeChessComponentAtGrid(selectedPoint2);
@@ -137,7 +139,7 @@ public class GameController implements GameListener {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-        if (!model.canSwap(selectedPoint,selectedPoint2, model.getGrid())){
+        if (!model.canSwap(selectedPoint,selectedPoint2, model.getGrid()) && swapstate == 1){
             model.swapChessPiece(selectedPoint,selectedPoint2);
             ChessComponent chess1 = view.removeChessComponentAtGrid(selectedPoint);
             ChessComponent chess2 = view.removeChessComponentAtGrid(selectedPoint2);
@@ -149,7 +151,7 @@ public class GameController implements GameListener {
             selectedPoint2 = null;
             System.out.println("can't swap");
         }
-        else{
+        else if(swapstate == 1){
             eliminate(model.search());
             selectedPoint = null;
             selectedPoint2 = null;
@@ -158,8 +160,6 @@ public class GameController implements GameListener {
 
     @Override
     public void onPlayerNextStep() {
-        // TODO: Init your next step function here.
-        this.statusLabel.setText("Score:" + score);
         if (model.eliminateNum(model.getGrid())!=0){
             eliminate(model.search());
         }
@@ -173,6 +173,7 @@ public class GameController implements GameListener {
             regenerate(model.getGrid());
             System.out.println("regenerate");
             view.repaint();
+            swapstate = 1;
         }
     }
 
