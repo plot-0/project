@@ -205,13 +205,14 @@ public class Chessboard {
             for (int j=0;j<Constant.CHESSBOARD_COL_SIZE.getNum();j++){
                 ChessPiece piece = grid[i][j].getPiece();
                 if (piece != null){
-                    sb.append(piece.getName()).append(" ");
+                    sb.append(piece.getId());
+                    sb.append(" ");
                 }
                 else{
                     sb.append(" ");
                 }
             }
-            saveLines.add(sb.toString());
+           saveLines.add(sb.toString());
         }
         sb.setLength(0);
         return saveLines;

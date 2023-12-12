@@ -16,11 +16,22 @@ public enum Constant {
         return num;
     }
 
-    static Map<String, Color> colorMap = new HashMap<>(){{
+    public static Map<String, Color> colorMap = new HashMap<>(){{
         put("💎",Color.blue);
         put("⚪",Color.white);
         put("▲",Color.green);
         put("🔶",Color.orange);
     }};
-
+    public static Map<String, Integer> colorMap2 = new HashMap<>(){{
+        put("💎",1);
+        put("⚪",2);
+        put("▲",3);
+        put("🔶",4);
+    }};
+    public static Map<Integer,String> colorMap3 = new HashMap<>(){{
+        put(1,"💎");
+        put(2,"⚪");
+        put(3,"▲");
+        put(4,"🔶");
+    }};
 }

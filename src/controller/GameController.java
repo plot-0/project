@@ -28,14 +28,12 @@ public class GameController implements GameListener {
     private ChessboardComponent view;
     public static int fallstate = 1;
     public static int swapstate = 1;
-
-
+    public static int swaplimit = 5;
+    public int goal = 50;
+    private int score;
     // Record whether there is a selected piece before
     private ChessboardPoint selectedPoint;
     private ChessboardPoint selectedPoint2;
-
-    private int score;
-
     private JLabel statusLabel;
 
     public JLabel getStatusLabel() {
@@ -152,7 +150,6 @@ public class GameController implements GameListener {
             System.out.println("can't swap");
         }
         else if(swapstate == 1){
-            eliminate(model.search());
             selectedPoint = null;
             selectedPoint2 = null;
         }
@@ -250,8 +247,13 @@ public class GameController implements GameListener {
 
     public void SaveGameToFile(String path) {
         List<String> saveLines = model.convertBoardToList();
+        Save file = new Save();
+        file.setSaveLines(saveLines);
+        //file.setScore(score);
+        //file.setSwapstate(swapstate);
+        //file.setFallstate(fallstate);
         try {
-            Files.write(Path.of(path),saveLines);
+            Files.write(Path.of(path),file.toList());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -274,11 +276,17 @@ public class GameController implements GameListener {
                     model.setChessPiece(new ChessboardPoint(i,j),null);
                 }
                 else{
-                    model.setChessPiece(new ChessboardPoint(i,j),new ChessPiece(line[j]));
+                    model.setChessPiece(new ChessboardPoint(i,j),new ChessPiece(Constant.colorMap3.get(Integer.parseInt(line[j]))));
                 }
             }
         }
+        score = Integer.parseInt(fl[Constant.CHESSBOARD_ROW_SIZE.getNum()].split("\r")[0]);
+        swaplimit = Integer.parseInt(fl[Constant.CHESSBOARD_ROW_SIZE.getNum()+1].split("\r")[0]);
+        fallstate = Integer.parseInt(fl[Constant.CHESSBOARD_ROW_SIZE.getNum()+2].split("\r")[0]);
+        swapstate = Integer.parseInt(fl[Constant.CHESSBOARD_ROW_SIZE.getNum()+3].split("\r")[0]);
+        goal = Integer.parseInt(fl[Constant.CHESSBOARD_ROW_SIZE.getNum()+4].split("\r")[0]);
         view.initiateChessComponent(model);
         view.repaint();
+        this.statusLabel.setText("Score:" + score);
     }
 }
