@@ -4,6 +4,7 @@ import listener.GameListener;
 import model.*;
 import view.CellComponent;
 import view.ChessComponent;
+import view.ChessGameFrame;
 import view.ChessboardComponent;
 
 import javax.swing.*;
@@ -28,20 +29,37 @@ public class GameController implements GameListener {
     private ChessboardComponent view;
     public static int fallstate = 1;
     public static int swapstate = 1;
-    public static int swaplimit = 5;
-    public int goal = 50;
+    public static int swaplimit;
+    public static int goal;
     private int score;
     // Record whether there is a selected piece before
     private ChessboardPoint selectedPoint;
     private ChessboardPoint selectedPoint2;
-    private JLabel statusLabel;
+    private JLabel scoreLabel;
+    private JLabel swaplimitLabel;
+    private JLabel goalLabel;
 
-    public JLabel getStatusLabel() {
-        return statusLabel;
+
+    public void setScoreLabel(JLabel scoreLabel) {
+        this.scoreLabel = scoreLabel;
+    }
+    public void setSwaplimitLabel(JLabel SwaplimitLabel) {this.swaplimitLabel = SwaplimitLabel;}
+    public void setgoalLabel(JLabel goalLabel) {this.goalLabel = goalLabel;}
+
+    public static int getSwaplimit() {
+        return swaplimit;
     }
 
-    public void setStatusLabel(JLabel statusLabel) {
-        this.statusLabel = statusLabel;
+    public static void setSwaplimit(int swaplimit) {
+        GameController.swaplimit = swaplimit;
+    }
+
+    public static int getGoal() {
+        return goal;
+    }
+
+    public static void setGoal(int goal) {
+        GameController.goal = goal;
     }
 
     public GameController(int height, ChessboardComponent view, Chessboard model) {
@@ -52,6 +70,7 @@ public class GameController implements GameListener {
         view.initiateChessComponent(model);
         view.repaint();
     }
+
 
     public void initialize() {
         model.initPieces();
@@ -70,9 +89,12 @@ public class GameController implements GameListener {
                 }
             }
         }
+        if (score>=goal){
+            System.out.println("succeed");
+        }
         fallstate = 1;
         swapstate = 0;
-        this.statusLabel.setText("Score:" + score);
+        this.scoreLabel.setText("Score:" + score);
     }
     public Cell[][] reverse(Cell[][] grid){
         Cell[][] reverse = new Cell[Constant.CHESSBOARD_COL_SIZE.getNum()][Constant.CHESSBOARD_ROW_SIZE.getNum()];
@@ -123,7 +145,10 @@ public class GameController implements GameListener {
     public void onPlayerSwapChess() {
         // TODO: Init your swap function here.
         System.out.println("Implement your swap here.");
-        if(selectedPoint!=null && selectedPoint2!=null && swapstate == 1){
+        if (swaplimit == 0 && score<goal){
+            System.out.println("fail");
+        }
+        if(selectedPoint!=null && selectedPoint2!=null && swapstate == 1 && swaplimit>0 ){
             model.swapChessPiece(selectedPoint,selectedPoint2);
             ChessComponent chess1 = view.removeChessComponentAtGrid(selectedPoint);
             ChessComponent chess2 = view.removeChessComponentAtGrid(selectedPoint2);
@@ -148,10 +173,13 @@ public class GameController implements GameListener {
             selectedPoint = null;
             selectedPoint2 = null;
             System.out.println("can't swap");
+
         }
         else if(swapstate == 1){
             selectedPoint = null;
             selectedPoint2 = null;
+            swaplimit -= 1;
+            this.swaplimitLabel.setText("Swap:"+swaplimit);
         }
     }
 
@@ -249,9 +277,11 @@ public class GameController implements GameListener {
         List<String> saveLines = model.convertBoardToList();
         Save file = new Save();
         file.setSaveLines(saveLines);
-        //file.setScore(score);
-        //file.setSwapstate(swapstate);
-        //file.setFallstate(fallstate);
+        file.setScore(score);
+        file.setSwapstate(swapstate);
+        file.setFallstate(fallstate);
+        file.setSwaplimit(swaplimit);
+        file.setGoal(goal);
         try {
             Files.write(Path.of(path),file.toList());
         } catch (IOException e) {
@@ -287,6 +317,6 @@ public class GameController implements GameListener {
         goal = Integer.parseInt(fl[Constant.CHESSBOARD_ROW_SIZE.getNum()+4].split("\r")[0]);
         view.initiateChessComponent(model);
         view.repaint();
-        this.statusLabel.setText("Score:" + score);
+        this.scoreLabel.setText("Score:" + score);
     }
 }

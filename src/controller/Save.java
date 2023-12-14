@@ -52,6 +52,14 @@ public class Save {
         this.swapstate = swapstate;
     }
 
+    public int getGoal() {
+        return goal;
+    }
+
+    public void setGoal(int goal) {
+        this.goal = goal;
+    }
+
     public List<String> toList() {
         List<String> file = new ArrayList<String>();
         file = saveLines;
