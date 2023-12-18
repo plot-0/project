@@ -11,6 +11,7 @@ public class JTextFieldFrame extends JFrame {
     private static int limit,goal;
     JTextField limitTextField,goalTextField;
     JButton confirmButton;
+    public static boolean mode = false;
     public JTextFieldFrame(){
         root = new JPanel();
         setContentPane(root);
@@ -34,22 +35,22 @@ public class JTextFieldFrame extends JFrame {
         //确认按钮
         confirmButton = new JButton("确认");
         confirmButton.setBounds(136,116,69,23);
-        confirmButton.addActionListener(e -> {
-            limit = Integer.parseInt(limitTextField.getText());
-            goal = Integer.parseInt(goalTextField.getText());
-            ChessGameFrame mainFrame = new ChessGameFrame(1100, 810);
-            GameController gameController = new GameController((810 * 4 / 5) / 9, mainFrame.getChessboardComponent(), new Chessboard());
-            mainFrame.setGameController(gameController);
-            gameController.setScoreLabel(mainFrame.getScoreLabel());
-            gameController.setSwaplimitLabel(mainFrame.getSwaplimitLabel());
-            gameController.setgoalLabel(mainFrame.getGoalLabel());
-            GameController.setSwaplimit(getLimit());
-            GameController.setGoal(getGoal());
-            mainFrame.setVisible(true);
-            setVisible(false);
-        });
         root.add(confirmButton);
-        //设置窗口风格
+        confirmButton.addActionListener(e -> {
+                limit = Integer.parseInt(limitTextField.getText());
+                goal = Integer.parseInt(goalTextField.getText());
+                GameFrame mainFrame = new GameFrame(1100,810);
+                GameController gameController = new GameController((810 * 4 / 5) / 9, mainFrame.getChessboardComponent(), new Chessboard(),mainFrame);
+                mainFrame.setGameController(gameController);
+                gameController.setScoreLabel(mainFrame.getScoreLabel());
+                gameController.setSwaplimitLabel(mainFrame.getSwaplimitLabel());
+                gameController.setgoalLabel(mainFrame.getGoalLabel());
+                GameController.setSwaplimit(getLimit());
+                GameController.setGoal(getGoal());
+                mainFrame.setVisible(true);
+        });
+        dispose();//关闭旧窗口
+        //设置游戏界面窗口
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setBounds(400,300,340,245);
         setVisible(true);

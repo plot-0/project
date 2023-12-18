@@ -1,6 +1,3 @@
-import controller.GameController;
-import model.Chessboard;
-import view.ChessGameFrame;
 import view.Menu;
 
 import javax.swing.*;

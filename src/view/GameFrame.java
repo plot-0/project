@@ -8,7 +8,7 @@ import java.awt.*;
 /**
  * 这个类表示游戏过程中的整个游戏界面，是一切的载体
  */
-public class ChessGameFrame extends JFrame {
+public class GameFrame extends JFrame {
     //    public final Dimension FRAME_SIZE ;
     private final int WIDTH;
     private final int HEIGTH;
@@ -23,8 +23,7 @@ public class ChessGameFrame extends JFrame {
     private JLabel swaplimitLabel;
     private JLabel goalLabel;
     private Menu menu = new Menu(1100,810);
-
-    public ChessGameFrame(int width, int height) {
+    public GameFrame(int width, int height) {
         setTitle("2023 CS109 Project Demo"); //设置标题
         this.WIDTH = width;
         this.HEIGTH = height;
@@ -112,9 +111,7 @@ public class ChessGameFrame extends JFrame {
         add(goalLabel);
     }
 
-    /**
-     * 在游戏面板中增加一个按钮，如果按下的话就会显示Hello, world!
-     */
+
 
     private void addRestartButton() {
         JButton button = new JButton("Restart");
@@ -139,7 +136,9 @@ public class ChessGameFrame extends JFrame {
 
     private void addNextStepButton() {
         JButton button = new JButton("Next Step");
-        button.addActionListener((e) -> chessboardComponent.nextStep());
+        button.addActionListener((e) -> {
+            chessboardComponent.nextStep();
+        });
         button.setLocation(HEIGTH, HEIGTH / 10 + 280);
         button.setSize(200, 60);
         button.setFont(new Font("Rockwell", Font.BOLD, 20));
@@ -156,8 +155,15 @@ public class ChessGameFrame extends JFrame {
         button.addActionListener(e -> {
             System.out.println("Click load");
             String path = JOptionPane.showInputDialog(this, "Input Path here");
-            System.out.println(path);
-            gameController.loadGameFromFile(path);
+            String type = path.substring(path.lastIndexOf("."));
+            if (type.equals(".txt")){
+                System.out.println(path);
+                gameController.loadGameFromFile(path);
+            }
+            else{
+                System.out.println("101");
+                JOptionPane.showMessageDialog(this,"101");
+            }
         });
     }
     private void addSaveButton() {
@@ -186,6 +192,9 @@ public class ChessGameFrame extends JFrame {
             dispose();
             menu.setVisible(true);
         });
+    }
+    public void errorDialog1(){
+        JOptionPane.showConfirmDialog(this,"101");
     }
 
 }

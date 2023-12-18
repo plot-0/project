@@ -4,7 +4,7 @@ import listener.GameListener;
 import model.*;
 import view.CellComponent;
 import view.ChessComponent;
-import view.ChessGameFrame;
+import view.GameFrame;
 import view.ChessboardComponent;
 
 import javax.swing.*;
@@ -27,6 +27,7 @@ public class GameController implements GameListener {
     private final int CHESS_SIZE;
     private Chessboard model;
     private ChessboardComponent view;
+    private GameFrame frame;
     public static int fallstate = 1;
     public static int swapstate = 1;
     public static int swaplimit;
@@ -62,10 +63,11 @@ public class GameController implements GameListener {
         GameController.goal = goal;
     }
 
-    public GameController(int height, ChessboardComponent view, Chessboard model) {
+    public GameController(int height, ChessboardComponent view, Chessboard model, GameFrame frame) {
         CHESS_SIZE = (height * 4 / 5) / 9;
         this.view = view;
         this.model = model;
+        this.frame = frame;
         view.registerController(this);
         view.initiateChessComponent(model);
         view.repaint();
@@ -89,12 +91,13 @@ public class GameController implements GameListener {
                 }
             }
         }
-        if (score>=goal){
-            System.out.println("succeed");
-        }
         fallstate = 1;
         swapstate = 0;
         this.scoreLabel.setText("Score:" + score);
+        if (score>=goal){
+            System.out.println("succeed");
+            JOptionPane.showMessageDialog(frame,"succeed");
+        }
     }
     public Cell[][] reverse(Cell[][] grid){
         Cell[][] reverse = new Cell[Constant.CHESSBOARD_COL_SIZE.getNum()][Constant.CHESSBOARD_ROW_SIZE.getNum()];
@@ -147,6 +150,7 @@ public class GameController implements GameListener {
         System.out.println("Implement your swap here.");
         if (swaplimit == 0 && score<goal){
             System.out.println("fail");
+            JOptionPane.showMessageDialog(frame,"fail");
         }
         if(selectedPoint!=null && selectedPoint2!=null && swapstate == 1 && swaplimit>0 ){
             model.swapChessPiece(selectedPoint,selectedPoint2);
@@ -173,7 +177,7 @@ public class GameController implements GameListener {
             selectedPoint = null;
             selectedPoint2 = null;
             System.out.println("can't swap");
-
+            JOptionPane.showMessageDialog(frame,"can't swap");
         }
         else if(swapstate == 1){
             selectedPoint = null;
@@ -199,6 +203,9 @@ public class GameController implements GameListener {
             System.out.println("regenerate");
             view.repaint();
             swapstate = 1;
+            if (swaplimit==0 && model.eliminateNum(model.getGrid())==0 && score<goal){
+                JOptionPane.showMessageDialog(frame,"fail");
+            }
         }
     }
 
@@ -292,31 +299,42 @@ public class GameController implements GameListener {
     public void loadGameFromFile(String path) {
         view.removeAllChessComponentsAtGrids();
         StringBuilder sb = new StringBuilder();
-        String file;
+        String file = null;
         try {
             file = Files.readString(Path.of(path));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
         String fl[] = file.split("\n");
-        for (int i =0;i<Constant.CHESSBOARD_ROW_SIZE.getNum();i++){
-            String[] line = fl[i].split(" ");
-            for (int j=0;j<Constant.CHESSBOARD_COL_SIZE.getNum();j++){
-                if (Objects.equals(line[j], "")){
-                    model.setChessPiece(new ChessboardPoint(i,j),null);
-                }
-                else{
-                    model.setChessPiece(new ChessboardPoint(i,j),new ChessPiece(Constant.colorMap3.get(Integer.parseInt(line[j]))));
+
+        try {
+            for (int i =0;i<Constant.CHESSBOARD_ROW_SIZE.getNum();i++){
+                String[] line = fl[i].split(" ");
+                for (int j=0;j<Constant.CHESSBOARD_COL_SIZE.getNum();j++){
+                    if (Objects.equals(line[j], "")){
+                        model.setChessPiece(new ChessboardPoint(i,j),null);
+                    }
+                    else{
+                        model.setChessPiece(new ChessboardPoint(i,j),new ChessPiece(Constant.colorMap3.get(Integer.parseInt(line[j]))));
+                    }
                 }
             }
+            score = Integer.parseInt(fl[Constant.CHESSBOARD_ROW_SIZE.getNum()].split("\r")[0]);
+            swaplimit = Integer.parseInt(fl[Constant.CHESSBOARD_ROW_SIZE.getNum()+1].split("\r")[0]);
+            fallstate = Integer.parseInt(fl[Constant.CHESSBOARD_ROW_SIZE.getNum()+2].split("\r")[0]);
+            swapstate = Integer.parseInt(fl[Constant.CHESSBOARD_ROW_SIZE.getNum()+3].split("\r")[0]);
+            goal = Integer.parseInt(fl[Constant.CHESSBOARD_ROW_SIZE.getNum()+4].split("\r")[0]);
+            view.initiateChessComponent(model);
+            view.repaint();
+            this.scoreLabel.setText("Score:" + score);
+        }catch (NumberFormatException e){
+            System.out.println("102");
+            JOptionPane.showMessageDialog(frame,"102");
         }
-        score = Integer.parseInt(fl[Constant.CHESSBOARD_ROW_SIZE.getNum()].split("\r")[0]);
-        swaplimit = Integer.parseInt(fl[Constant.CHESSBOARD_ROW_SIZE.getNum()+1].split("\r")[0]);
-        fallstate = Integer.parseInt(fl[Constant.CHESSBOARD_ROW_SIZE.getNum()+2].split("\r")[0]);
-        swapstate = Integer.parseInt(fl[Constant.CHESSBOARD_ROW_SIZE.getNum()+3].split("\r")[0]);
-        goal = Integer.parseInt(fl[Constant.CHESSBOARD_ROW_SIZE.getNum()+4].split("\r")[0]);
-        view.initiateChessComponent(model);
-        view.repaint();
-        this.scoreLabel.setText("Score:" + score);
+        catch (NullPointerException e){
+            System.out.println("103");
+            JOptionPane.showMessageDialog(frame,"103");
+        }
     }
 }

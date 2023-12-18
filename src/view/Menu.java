@@ -19,7 +19,6 @@ public class Menu extends JFrame {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE); //设置程序关闭按键，如果点击右上方的叉就游戏全部关闭了
         setLayout(null);
 
-        addLoadButton();
         addStartButton();
         addExitButton();
         //addAutoModeButton();
@@ -27,34 +26,22 @@ public class Menu extends JFrame {
 
     private void addAutoModeButton() {
         JButton button = new JButton("Auto Mode");
-        button.setLocation(WIDTH/2-100, HEIGTH / 10 + 440);
-        button.setSize(200, 60);
-        button.setFont(new Font("Rockwell", Font.BOLD, 20));
-        add(button);
-    }
-
-    private void addLoadButton() {
-        JButton button = new JButton("Load");
-        button.setLocation(WIDTH/2-100, HEIGTH / 10 + 360);
+        button.setLocation(WIDTH/2-100, HEIGTH / 10 + 280);
         button.setSize(200, 60);
         button.setFont(new Font("Rockwell", Font.BOLD, 20));
         add(button);
 
         button.addActionListener(e -> {
-            ChessGameFrame mainFrame = new ChessGameFrame(1100, 810);
-            GameController gameController = new GameController((810 * 4 / 5) / 9, mainFrame.getChessboardComponent(), new Chessboard());
-            mainFrame.setGameController(gameController);
-            gameController.setScoreLabel(mainFrame.getScoreLabel());
-            String path = JOptionPane.showInputDialog(this, "Input Path here");
-            gameController.loadGameFromFile(path);
-            mainFrame.setVisible(true);
+            new JTextFieldFrame();
             setVisible(false);
         });
     }
 
+
+
     private void addExitButton() {
         JButton button = new JButton("Exit");
-        button.setLocation(WIDTH/2-100, HEIGTH / 10 + 280);
+        button.setLocation(WIDTH/2-100, HEIGTH / 10 + 360);
         button.setSize(200, 60);
         button.setFont(new Font("Rockwell", Font.BOLD, 20));
         add(button);
