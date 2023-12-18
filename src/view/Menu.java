@@ -21,7 +21,7 @@ public class Menu extends JFrame {
 
         addStartButton();
         addExitButton();
-        //addAutoModeButton();
+        addAutoModeButton();
     }
 
     private void addAutoModeButton() {
@@ -32,7 +32,7 @@ public class Menu extends JFrame {
         add(button);
 
         button.addActionListener(e -> {
-            new JTextFieldFrame();
+            new JTextFieldFrame(true);
             setVisible(false);
         });
     }
@@ -59,7 +59,7 @@ public class Menu extends JFrame {
         add(button);
 
         button.addActionListener(e -> {
-            new JTextFieldFrame();
+            new JTextFieldFrame(false);
             setVisible(false);
         });
     }

@@ -12,7 +12,10 @@ public class JTextFieldFrame extends JFrame {
     JTextField limitTextField,goalTextField;
     JButton confirmButton;
     public static boolean mode = false;
-    public JTextFieldFrame(){
+    GameFrame mainframe;
+    GameController gameController;
+    public JTextFieldFrame(boolean mode){
+        JTextFieldFrame.mode = mode;
         root = new JPanel();
         setContentPane(root);
         setLayout(null);
@@ -36,10 +39,14 @@ public class JTextFieldFrame extends JFrame {
         confirmButton = new JButton("确认");
         confirmButton.setBounds(136,116,69,23);
         root.add(confirmButton);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        //设置界面窗口
+        setBounds(400,300,340,245);
+        setVisible(true);
         confirmButton.addActionListener(e -> {
                 limit = Integer.parseInt(limitTextField.getText());
                 goal = Integer.parseInt(goalTextField.getText());
-                GameFrame mainFrame = new GameFrame(1100,810);
+                GameFrame mainFrame = new GameFrame(1100, 810, mode);
                 GameController gameController = new GameController((810 * 4 / 5) / 9, mainFrame.getChessboardComponent(), new Chessboard(),mainFrame);
                 mainFrame.setGameController(gameController);
                 gameController.setScoreLabel(mainFrame.getScoreLabel());
@@ -47,13 +54,21 @@ public class JTextFieldFrame extends JFrame {
                 gameController.setgoalLabel(mainFrame.getGoalLabel());
                 GameController.setSwaplimit(getLimit());
                 GameController.setGoal(getGoal());
+                this.mainframe = mainFrame;
+                this.gameController = gameController;
+                dispose();//关闭旧窗口
                 mainFrame.setVisible(true);
+                if (!mode){
+                    GameController.mode = false;
+                    mainFrame.mode = false;
+                }
+                else{
+                    GameController.mode = true;
+                    mainFrame.mode = true;
+                    SwingUtilities.invokeLater(gameController::auto);
+                }
         });
-        dispose();//关闭旧窗口
-        //设置游戏界面窗口
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setBounds(400,300,340,245);
-        setVisible(true);
+
     }
 
     public static int getLimit() {
@@ -64,5 +79,7 @@ public class JTextFieldFrame extends JFrame {
     public static int getGoal() {
         return goal;
     }
+
+
 
 }

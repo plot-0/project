@@ -31,7 +31,9 @@ public class GameController implements GameListener {
     public static int fallstate = 1;
     public static int swapstate = 1;
     public static int swaplimit;
+    public static int restartlimit = 3;
     public static int goal;
+    public static boolean mode = false;
     private int score;
     // Record whether there is a selected piece before
     private ChessboardPoint selectedPoint;
@@ -75,10 +77,19 @@ public class GameController implements GameListener {
 
 
     public void initialize() {
-        model.initPieces();
-        view.removeAllChessComponentsAtGrids();
-        view.initiateChessComponent(model);
-        view.repaint();
+        if (restartlimit>0){
+            model.initPieces();
+            view.removeAllChessComponentsAtGrids();
+            view.initiateChessComponent(model);
+            view.repaint();
+            restartlimit -= 1;
+            frame.restart.setText("Restart limit:"+GameController.restartlimit);
+            frame.restart.revalidate();
+            frame.restart.repaint();
+        }
+        else{
+            JOptionPane.showMessageDialog(frame,"重置次数已用尽");
+        }
     }
     public void eliminate(int[][] search){
         score += 10*model.eliminateNum(model.getGrid());
@@ -336,5 +347,17 @@ public class GameController implements GameListener {
             System.out.println("103");
             JOptionPane.showMessageDialog(frame,"103");
         }
+    }
+
+    public void auto(){
+        while (mode){
+            if (selectedPoint!=null && selectedPoint2 != null){
+                onPlayerSwapChess();
+            }
+            if (model.eliminateNum(model.getGrid())!=0 && !model.nullPoints(model.getGrid()).isEmpty()){
+                onPlayerNextStep();
+            }
+        }
+
     }
 }

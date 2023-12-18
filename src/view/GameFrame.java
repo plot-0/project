@@ -18,16 +18,18 @@ public class GameFrame extends JFrame {
     private GameController gameController;
 
     private ChessboardComponent chessboardComponent;
-
+    public JButton restart;
     private JLabel scoreLabel;
     private JLabel swaplimitLabel;
     private JLabel goalLabel;
     private Menu menu = new Menu(1100,810);
-    public GameFrame(int width, int height) {
+    public static boolean mode = false;
+    public GameFrame(int width, int height,boolean mode) {
         setTitle("2023 CS109 Project Demo"); //设置标题
         this.WIDTH = width;
         this.HEIGTH = height;
         this.ONE_CHESS_SIZE = (HEIGTH * 4 / 5) / 9;
+        GameFrame.mode = mode;
 
         setSize(WIDTH, HEIGTH);
         setLocationRelativeTo(null); // Center the window.
@@ -40,8 +42,11 @@ public class GameFrame extends JFrame {
         addswapLimitLabel();
         addgoalLabel();
         addRestartButton();
-        addSwapConfirmButton();
-        addNextStepButton();
+        if (!mode){
+            addSwapConfirmButton();
+            addNextStepButton();
+        }
+        //addSwapConfirmButton();
         addLoadButton();
         addSaveButton();
         addMenuButton();
@@ -114,14 +119,14 @@ public class GameFrame extends JFrame {
 
 
     private void addRestartButton() {
-        JButton button = new JButton("Restart");
+        JButton button = new JButton("Restart limit:"+GameController.restartlimit);
         button.addActionListener(e -> {
-            //JOptionPane.showMessageDialog(this, "Show hello world");
             gameController.initialize();
         });
         button.setLocation(HEIGTH, HEIGTH / 10 + 120);
         button.setSize(200, 60);
         button.setFont(new Font("Rockwell", Font.BOLD, 20));
+        restart = button;
         add(button);
     }
 

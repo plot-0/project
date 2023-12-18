@@ -1,6 +1,9 @@
+import controller.GameController;
+import view.GameFrame;
 import view.Menu;
 
 import javax.swing.*;
+import view.JTextFieldFrame;
 
 public class Main {
     public static void main(String[] args) {
