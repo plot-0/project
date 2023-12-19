@@ -349,6 +349,8 @@ public class GameController implements GameListener {
             view.initiateChessComponent(model);
             view.repaint();
             this.scoreLabel.setText("Score:" + score);
+            this.swaplimitLabel.setText("Swap" + swaplimit);
+            this.goalLabel.setText("goal:" + goal);
         }catch (NumberFormatException e){
             System.out.println("102");
             JOptionPane.showMessageDialog(frame,"102","存档损坏",JOptionPane.ERROR_MESSAGE);

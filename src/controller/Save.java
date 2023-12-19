@@ -5,11 +5,11 @@ import java.util.List;
 
 public class Save {
     private List<String> saveLines;
-    public int score = 100;
-    public int swaplimit = 10;
-    public int fallstate = 1;
-    public int swapstate = 1;
-    public int goal = 50;
+    public int score ;
+    public int swaplimit;
+    public int fallstate;
+    public int swapstate;
+    public int goal;
 
 
     public List<String> getSaveLines() {
