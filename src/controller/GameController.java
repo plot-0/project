@@ -8,7 +8,6 @@ import view.GameFrame;
 import view.ChessboardComponent;
 
 import javax.swing.*;
-import java.awt.*;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -29,18 +28,20 @@ public class GameController implements GameListener {
     public Chessboard model;
     private ChessboardComponent view;
     private GameFrame frame;
+    public int level;
     public static int fallstate = 1;
-    public static int swapstate = 1;
+    public int swapstate = 1;
     public static int swaplimit;
-    public static int restartlimit = 3;
+    public static int shufflelimit = 3;
     public static int goal;
     public static boolean mode = false;
-    private int score;
+    public int score;
     // Record whether there is a selected piece before
     public ChessboardPoint selectedPoint;
     public ChessboardPoint selectedPoint2;
     private JLabel scoreLabel;
     private JLabel swaplimitLabel;
+    public JLabel initswaplimitLabel;
     private JLabel goalLabel;
 
 
@@ -78,19 +79,10 @@ public class GameController implements GameListener {
 
 
     public void initialize() {
-        if (restartlimit>0){
             model.initPieces();
             view.removeAllChessComponentsAtGrids();
             view.initiateChessComponent(model);
             view.repaint();
-            restartlimit -= 1;
-            frame.restart.setText("Restart limit:"+GameController.restartlimit);
-            frame.restart.revalidate();
-            frame.restart.repaint();
-        }
-        else{
-            JOptionPane.showMessageDialog(frame,"重置次数已用尽");
-        }
     }
     public void eliminate(int[][] search){
         score += 10*model.eliminateNum(model.getGrid());
@@ -106,9 +98,8 @@ public class GameController implements GameListener {
         fallstate = 1;
         swapstate = 0;
         this.scoreLabel.setText("Score:" + score);
-        if (score>=goal){
-            System.out.println("succeed");
-            JOptionPane.showMessageDialog(frame,"succeed");
+        if (!mode){
+            detectSucceed();
         }
     }
     public Cell[][] reverse(Cell[][] grid){
@@ -159,11 +150,7 @@ public class GameController implements GameListener {
     @Override
     public void onPlayerSwapChess() {
         // TODO: Init your swap function here.
-        System.out.println("Implement your swap here.");
-        if (swaplimit == 0 && score<goal){
-            System.out.println("fail");
-            JOptionPane.showMessageDialog(frame,"fail");
-        }
+        System.out.println("swapstate:"+swapstate);
         if(selectedPoint!=null && selectedPoint2!=null && swapstate == 1 && swaplimit>0 ){
             model.swapChessPiece(selectedPoint,selectedPoint2);
             ChessComponent chess1 = view.removeChessComponentAtGrid(selectedPoint);
@@ -172,11 +159,6 @@ public class GameController implements GameListener {
             view.setChessComponentAtGrid(selectedPoint2,chess1);
             chess1.repaint();
             chess2.repaint();
-        }
-        try {
-            Thread.sleep(100);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
         }
         if (!model.canSwap(selectedPoint,selectedPoint2, model.getGrid()) && swapstate == 1){
             model.swapChessPiece(selectedPoint,selectedPoint2);
@@ -198,10 +180,16 @@ public class GameController implements GameListener {
             this.swaplimitLabel.setText("Swap:"+swaplimit);
             while (mode && (model.eliminateNum(model.getGrid())!=0 || model.nullPoints(model.getGrid()).size()>0)){
                 onPlayerNextStep();
+                if (detectSucceed()){
+                    break;
+                }
+                if (detectFail()){
+                    break;
+                }
                 try {
                     Thread.sleep(300);
                 } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
+
                 }
                 view.paintImmediately(0,0,frame.getWidth(),frame.getHeight());
             }
@@ -224,8 +212,8 @@ public class GameController implements GameListener {
             System.out.println("regenerate");
             view.repaint();
             swapstate = 1;
-            if (swaplimit==0 && model.eliminateNum(model.getGrid())==0 && score<goal){
-                JOptionPane.showMessageDialog(frame,"fail");
+            if (!mode){
+                detectFail();
             }
         }
     }
@@ -361,4 +349,71 @@ public class GameController implements GameListener {
         }
     }
 
+    private void enterNextLevel(int limit,int goal){
+        frame.dispose();
+        GameFrame mainFrame = new GameFrame(1100, 810, mode);
+        GameController gameController = new GameController((810 * 4 / 5) / 9, mainFrame.getChessboardComponent(), new Chessboard(),mainFrame);
+        mainFrame.setGameController(gameController);
+        mainFrame.setSwaplimitLabel(limit);
+        mainFrame.setGoalLabel(goal);
+        gameController.setScoreLabel(mainFrame.getScoreLabel());
+        gameController.setSwaplimitLabel(mainFrame.getSwaplimitLabel());
+        gameController.setgoalLabel(mainFrame.getGoalLabel());
+        GameController.setSwaplimit(limit);
+        gameController.initswaplimitLabel = new JLabel(String.valueOf(limit));
+        GameController.setGoal(goal);
+        gameController.level = level+1;
+        mainFrame.setVisible(true);
+    }
+    private boolean detectSucceed(){
+        if (level<=2 && score>=goal){
+            Object[] option = {"进入下一关","返回标题"};
+            int op = JOptionPane.showOptionDialog(frame,"succeed","结果",JOptionPane.YES_NO_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE,null,option,option[0]);
+            if (op==0 && level==1){
+                enterNextLevel(6,300);
+                return true;
+            }
+            else if (op==0 && level==2){
+                enterNextLevel(9,900);
+                return true;
+            }
+            else if (op==1){
+                frame.clickMenu();
+                return true;
+            }
+        }
+        else if (score>=goal){
+            JOptionPane.showMessageDialog(frame,"Succeed");
+            frame.clickMenu();
+            return true;
+        }
+        return false;
+    }
+    private boolean detectFail(){
+        if (swaplimit==0 && model.eliminateNum(model.getGrid())==0 && score<goal){
+            Object[] option = {"再来一局","返回标题"};
+            int op = JOptionPane.showOptionDialog(frame,"fail","结果",JOptionPane.YES_NO_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE,null,option,option[0]);
+            if (op==0 && level==1){
+                frame.clickRestart();
+                return true;
+            }
+            else if (op==0 && level==2){
+                frame.clickRestart();
+                return true;
+            }
+            else if (op==0 && level==3){
+                frame.clickRestart();
+                return true;
+            }
+            else if (op==0 && level==4){
+                frame.clickRestart();
+                return true;
+            }
+            else if (op==1){
+                frame.clickMenu();
+                return true;
+            }
+        }
+        return false;
+    }
 }

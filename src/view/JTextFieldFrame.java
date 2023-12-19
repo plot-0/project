@@ -53,11 +53,13 @@ public class JTextFieldFrame extends JFrame {
                 gameController.setSwaplimitLabel(mainFrame.getSwaplimitLabel());
                 gameController.setgoalLabel(mainFrame.getGoalLabel());
                 GameController.setSwaplimit(getLimit());
+                gameController.initswaplimitLabel = new JLabel(String.valueOf(getLimit()));
                 GameController.setGoal(getGoal());
                 this.mainframe = mainFrame;
                 this.gameController = gameController;
                 dispose();//关闭旧窗口
                 mainFrame.setVisible(true);
+                gameController.level = 4;
                 if (!mode){
                     GameController.mode = false;
                     mainFrame.mode = false;

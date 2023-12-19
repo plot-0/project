@@ -18,7 +18,7 @@ public class GameFrame extends JFrame {
     private GameController gameController;
 
     private ChessboardComponent chessboardComponent;
-    public JButton restart;
+    public JButton shuffle;
     private JLabel scoreLabel;
     private JLabel swaplimitLabel;
     private JLabel goalLabel;
@@ -41,6 +41,7 @@ public class GameFrame extends JFrame {
         addscoreLabel();
         addswapLimitLabel();
         addgoalLabel();
+        addShuffleButton();
         addRestartButton();
         if (!mode){
             addSwapConfirmButton();
@@ -67,6 +68,12 @@ public class GameFrame extends JFrame {
         this.gameController = gameController;
     }
 
+    public void setSwaplimitLabel(int limit){
+        swaplimitLabel.setText("Swap:"+limit);
+    }
+    public void setGoalLabel(int goal){
+        goalLabel.setText("Goal:"+goal);
+    }
     /**
      * 在游戏面板中添加棋盘
      */
@@ -117,15 +124,24 @@ public class GameFrame extends JFrame {
 
 
 
-    private void addRestartButton() {
-        JButton button = new JButton("Restart limit:"+GameController.restartlimit);
+    private void addShuffleButton() {
+        JButton button = new JButton("Shuffle limit:"+GameController.shufflelimit);
         button.addActionListener(e -> {
-            gameController.initialize();
+            if (gameController.shufflelimit>0){
+                gameController.initialize();
+                gameController.shufflelimit -= 1;
+                this.shuffle.setText("Shuffle limit:"+GameController.shufflelimit);
+                this.shuffle.revalidate();
+                this.shuffle.repaint();
+            }
+            else{
+                JOptionPane.showMessageDialog(this,"重置次数已用尽");
+            }
         });
         button.setLocation(HEIGTH, HEIGTH / 10 + 120);
         button.setSize(200, 60);
         button.setFont(new Font("Rockwell", Font.BOLD, 20));
-        restart = button;
+        shuffle = button;
         add(button);
     }
 
@@ -193,9 +209,38 @@ public class GameFrame extends JFrame {
         add(button);
 
         button.addActionListener(e -> {
-            dispose();
-            menu.setVisible(true);
+            clickMenu();
         });
+    }
+    public void addRestartButton(){
+        JButton button = new JButton("Restart");
+        button.setLocation(HEIGTH,HEIGTH/10 + 600);
+        button.setSize(200,60);
+        button.setFont(new Font("Rockwell", Font.BOLD, 20));
+        add(button);
+
+        button.addActionListener(e -> {
+            clickRestart();
+        });
+    }
+    public void clickMenu(){
+        dispose();
+        menu.setVisible(true);
+        try {
+            Thread.currentThread().interrupt();
+        }catch (RuntimeException e){
+
+        }
+    }
+    public void clickRestart(){
+        gameController.initialize();
+        gameController.score = 0;
+        scoreLabel.setText("Score:"+ gameController.score);
+        gameController.setScoreLabel(scoreLabel);
+        swaplimitLabel.setText("Swap:" + gameController.initswaplimitLabel.getText());
+        gameController.setSwaplimitLabel(swaplimitLabel);
+        GameController.swaplimit = Integer.parseInt(gameController.initswaplimitLabel.getText());
+        gameController.swapstate = 1;
     }
 
 }

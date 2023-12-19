@@ -32,8 +32,24 @@ public class Menu extends JFrame {
         add(button);
 
         button.addActionListener(e -> {
-            new JTextFieldFrame(true);
-            setVisible(false);
+            Object[] difficulty ={"LEVEL 1","LEVEL 2","LEVEL 3","CUSTOM"};
+            int op = JOptionPane.showOptionDialog(this,"难度选择","difficulty",JOptionPane.YES_NO_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE,null,difficulty,difficulty[0]);
+            if (op==0){
+                enterLevel(3,90,true,1);//LEVEL1
+                setVisible(false);
+            }
+            else if(op==1){
+                enterLevel(6,300,true,2);//LEVEL2
+                setVisible(false);
+            }
+            else if (op==2){
+                enterLevel(9,900,true,3);//LEVEL3
+                setVisible(false);
+            }
+            else if (op==3){
+                new JTextFieldFrame(true);
+                setVisible(false);
+            }
         });
     }
 
@@ -48,6 +64,7 @@ public class Menu extends JFrame {
 
         button.addActionListener(e -> {
             dispose();
+            System.exit(0);
         });
     }
 
@@ -59,9 +76,47 @@ public class Menu extends JFrame {
         add(button);
 
         button.addActionListener(e -> {
-            new JTextFieldFrame(false);
-            setVisible(false);
+            Object[] difficulty ={"LEVEL 1","LEVEL 2","LEVEL 3","CUSTOM"};
+            int op = JOptionPane.showOptionDialog(this,"难度选择","difficulty",JOptionPane.YES_NO_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE,null,difficulty,difficulty[0]);
+            if (op==0){
+                enterLevel(3,90,false,1);//LEVEL1
+                setVisible(false);
+            }
+            else if(op==1){
+                enterLevel(6,300,false,2);//LEVEL2
+                setVisible(false);
+            }
+            else if (op==2){
+                enterLevel(9,900,false,3);//LEVEL3
+                setVisible(false);
+            }
+            else if (op==3){
+                new JTextFieldFrame(false);
+                setVisible(false);
+            }
         });
     }
-
+    private void enterLevel(int limit,int goal,boolean mode,int level){
+        GameFrame mainFrame = new GameFrame(1100, 810, mode);
+        GameController gameController = new GameController((810 * 4 / 5) / 9, mainFrame.getChessboardComponent(), new Chessboard(),mainFrame);
+        mainFrame.setGameController(gameController);
+        mainFrame.setSwaplimitLabel(limit);
+        mainFrame.setGoalLabel(goal);
+        gameController.setScoreLabel(mainFrame.getScoreLabel());
+        gameController.setSwaplimitLabel(mainFrame.getSwaplimitLabel());
+        gameController.setgoalLabel(mainFrame.getGoalLabel());
+        GameController.setSwaplimit(limit);
+        gameController.initswaplimitLabel = new JLabel(String.valueOf(limit));
+        GameController.setGoal(goal);
+        gameController.level = level;
+        mainFrame.setVisible(true);
+        if (!mode){
+            GameController.mode = false;
+            mainFrame.mode = false;
+        }
+        else{
+            GameController.mode = true;
+            mainFrame.mode = true;
+        }
+    }
 }
