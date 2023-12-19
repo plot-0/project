@@ -8,6 +8,7 @@ import view.GameFrame;
 import view.ChessboardComponent;
 
 import javax.swing.*;
+import java.awt.*;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -25,7 +26,7 @@ import java.util.Objects;
 public class GameController implements GameListener {
     //修改了构造方法，获取size
     private final int CHESS_SIZE;
-    private Chessboard model;
+    public Chessboard model;
     private ChessboardComponent view;
     private GameFrame frame;
     public static int fallstate = 1;
@@ -36,8 +37,8 @@ public class GameController implements GameListener {
     public static boolean mode = false;
     private int score;
     // Record whether there is a selected piece before
-    private ChessboardPoint selectedPoint;
-    private ChessboardPoint selectedPoint2;
+    public ChessboardPoint selectedPoint;
+    public ChessboardPoint selectedPoint2;
     private JLabel scoreLabel;
     private JLabel swaplimitLabel;
     private JLabel goalLabel;
@@ -195,6 +196,15 @@ public class GameController implements GameListener {
             selectedPoint2 = null;
             swaplimit -= 1;
             this.swaplimitLabel.setText("Swap:"+swaplimit);
+            while (mode && (model.eliminateNum(model.getGrid())!=0 || model.nullPoints(model.getGrid()).size()>0)){
+                onPlayerNextStep();
+                try {
+                    Thread.sleep(300);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+                view.paintImmediately(0,0,frame.getWidth(),frame.getHeight());
+            }
         }
     }
 
@@ -341,23 +351,12 @@ public class GameController implements GameListener {
             this.scoreLabel.setText("Score:" + score);
         }catch (NumberFormatException e){
             System.out.println("102");
-            JOptionPane.showMessageDialog(frame,"102");
+            JOptionPane.showMessageDialog(frame,"102","存档损坏",JOptionPane.ERROR_MESSAGE);
         }
         catch (NullPointerException e){
             System.out.println("103");
-            JOptionPane.showMessageDialog(frame,"103");
+            JOptionPane.showMessageDialog(frame,"103","存档损坏",JOptionPane.ERROR_MESSAGE);
         }
     }
 
-    public void auto(){
-        while (mode){
-            if (selectedPoint!=null && selectedPoint2 != null){
-                onPlayerSwapChess();
-            }
-            if (model.eliminateNum(model.getGrid())!=0 && !model.nullPoints(model.getGrid()).isEmpty()){
-                onPlayerNextStep();
-            }
-        }
-
-    }
 }

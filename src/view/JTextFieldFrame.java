@@ -65,7 +65,6 @@ public class JTextFieldFrame extends JFrame {
                 else{
                     GameController.mode = true;
                     mainFrame.mode = true;
-                    SwingUtilities.invokeLater(gameController::auto);
                 }
         });
 

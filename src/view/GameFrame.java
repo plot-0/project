@@ -46,7 +46,6 @@ public class GameFrame extends JFrame {
             addSwapConfirmButton();
             addNextStepButton();
         }
-        //addSwapConfirmButton();
         addLoadButton();
         addSaveButton();
         addMenuButton();
@@ -167,7 +166,7 @@ public class GameFrame extends JFrame {
             }
             else{
                 System.out.println("101");
-                JOptionPane.showMessageDialog(this,"101");
+                JOptionPane.showMessageDialog(this,"101","存档损坏",JOptionPane.ERROR_MESSAGE);
             }
         });
     }
@@ -197,9 +196,6 @@ public class GameFrame extends JFrame {
             dispose();
             menu.setVisible(true);
         });
-    }
-    public void errorDialog1(){
-        JOptionPane.showConfirmDialog(this,"101");
     }
 
 }

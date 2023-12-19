@@ -142,6 +142,9 @@ public class ChessboardComponent extends JComponent {
                 System.out.print("One chess here and ");
                 gameController.onPlayerClickChessPiece(getChessboardPoint(e.getPoint()), (ChessComponent) clickedComponent.getComponents()[0]);
             }
+            if (gameController.mode && gameController.selectedPoint!=null && gameController.selectedPoint2!=null){
+                swapChess();
+            }
         }
     }
 }
