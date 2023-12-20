@@ -10,7 +10,8 @@ public class Save {
     public int fallstate;
     public int swapstate;
     public int goal;
-
+    public int level;
+    public int shufflelimit;
 
     public List<String> getSaveLines() {
         return saveLines;
@@ -68,6 +69,8 @@ public class Save {
         file.add(Integer.toString(fallstate));
         file.add(Integer.toString(swapstate));
         file.add(Integer.toString(goal));
+        file.add(Integer.toString(level));
+        file.add(Integer.toString(shufflelimit));
         return file;
     }
 }

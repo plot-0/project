@@ -61,15 +61,19 @@ public class ChessboardComponent extends JComponent {
                 ChessboardPoint temp = new ChessboardPoint(i, j);
                 CellComponent cell;
                 if (riverCell.contains(temp)) {
-                    cell = new CellComponent(Color.CYAN, calculatePoint(i, j), CHESS_SIZE);
+                    cell = new CellComponent(Color.cyan, calculatePoint(i, j), CHESS_SIZE);
                     this.add(cell);
-                } else {
-                    cell = new CellComponent(Color.LIGHT_GRAY, calculatePoint(i, j), CHESS_SIZE);
+                }
+                else {
+                    cell = new CellComponent(Color.lightGray, calculatePoint(i, j), CHESS_SIZE);
                     this.add(cell);
                 }
                 gridComponents[i][j] = cell;
             }
         }
+    }
+    public void changeColor(ChessboardPoint point,Color color){
+       gridComponents[point.getRow()][point.getCol()] = new CellComponent(color, calculatePoint(point.getRow(), point.getCol()), CHESS_SIZE);
     }
 
     public void registerController(GameController gameController) {
@@ -139,7 +143,7 @@ public class ChessboardComponent extends JComponent {
                 System.out.print("None chess here and ");
                 gameController.onPlayerClickCell(getChessboardPoint(e.getPoint()), (CellComponent) clickedComponent);
             } else {
-                System.out.print("One chess here and ");
+                System.out.print("One chess"+ gameController.model.getChessPieceAt(getChessboardPoint(e.getPoint())).getName()+ "here and ");
                 gameController.onPlayerClickChessPiece(getChessboardPoint(e.getPoint()), (ChessComponent) clickedComponent.getComponents()[0]);
             }
             if (gameController.mode && gameController.selectedPoint!=null && gameController.selectedPoint2!=null){

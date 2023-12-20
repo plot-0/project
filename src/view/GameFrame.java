@@ -1,9 +1,13 @@
 package view;
 
 import controller.GameController;
+import controller.Hint;
+import model.Chessboard;
+import model.ChessboardPoint;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 
 /**
  * 这个类表示游戏过程中的整个游戏界面，是一切的载体
@@ -18,6 +22,7 @@ public class GameFrame extends JFrame {
     private GameController gameController;
 
     private ChessboardComponent chessboardComponent;
+    public Hint hint;
     public JButton shuffle;
     private JLabel scoreLabel;
     private JLabel swaplimitLabel;
@@ -50,6 +55,7 @@ public class GameFrame extends JFrame {
         addLoadButton();
         addSaveButton();
         addMenuButton();
+        addHintButton();
     }
 
     public ChessboardComponent getChessboardComponent() {
@@ -223,14 +229,38 @@ public class GameFrame extends JFrame {
             clickRestart();
         });
     }
+    public void addHintButton(){
+        JButton button = new JButton("Hint");
+        button.setLocation(HEIGTH-260,HEIGTH/10 + 600);
+        button.setSize(200,60);
+        button.setFont(new Font("Rockwell", Font.BOLD, 20));
+        add(button);
+
+        button.addActionListener(e -> {
+            Hint hint = new Hint(gameController.model);
+            ArrayList<ChessboardPoint> points = hint.clickHint();
+            if (!points.isEmpty()){
+                ChessboardPoint point1 = points.get(0);
+                ChessboardPoint point2 = points.get(1);
+                chessboardComponent.getGridComponentAt(point1).setBackground(Color.ORANGE);
+                chessboardComponent.getGridComponentAt(point2).setBackground(Color.ORANGE);
+                chessboardComponent.getGridComponentAt(point1).paintImmediately(0,0,getWidth(),getHeight());
+                chessboardComponent.getGridComponentAt(point2).paintImmediately(0,0,getWidth(),getHeight());
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException ex) {
+                    throw new RuntimeException(ex);
+                }
+                repaint();
+            }
+            else{
+                JOptionPane.showMessageDialog(this,"没有可交换的点");
+            }
+        });
+    }
     public void clickMenu(){
         dispose();
         menu.setVisible(true);
-        try {
-            Thread.currentThread().interrupt();
-        }catch (RuntimeException e){
-
-        }
     }
     public void clickRestart(){
         gameController.initialize();
@@ -241,6 +271,7 @@ public class GameFrame extends JFrame {
         gameController.setSwaplimitLabel(swaplimitLabel);
         GameController.swaplimit = Integer.parseInt(gameController.initswaplimitLabel.getText());
         gameController.swapstate = 1;
+        GameController.shufflelimit = 3;
+        shuffle.setText("Shuffle limit:"+GameController.shufflelimit);
     }
-
 }

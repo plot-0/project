@@ -102,18 +102,10 @@ public class GameController implements GameListener {
             detectSucceed();
         }
     }
-    public Cell[][] reverse(Cell[][] grid){
-        Cell[][] reverse = new Cell[Constant.CHESSBOARD_COL_SIZE.getNum()][Constant.CHESSBOARD_ROW_SIZE.getNum()];
-        for (int j = 0; j <Constant.CHESSBOARD_COL_SIZE.getNum(); j++) {
-            for (int i = 0;i<Constant.CHESSBOARD_ROW_SIZE.getNum(); i++) {
-                reverse[j][i] = model.getGridAt(new ChessboardPoint(i,j));
-            }
-        }
-        return reverse;
-    }
+
     //降落
     public void fall(){
-        Cell[][] reverse = reverse(model.getGrid());
+        Cell[][] reverse = model.reverse(model.getGrid());
         for (int j = 0; j <Constant.CHESSBOARD_COL_SIZE.getNum(); j++) {
             for (int e=0;e< model.nullInCol(reverse[j]);e++){
                 for (int i = Constant.CHESSBOARD_ROW_SIZE.getNum()-2; i >=0 ; i--) {
@@ -298,6 +290,8 @@ public class GameController implements GameListener {
         file.setFallstate(fallstate);
         file.setSwaplimit(swaplimit);
         file.setGoal(goal);
+        file.level = level;
+        file.shufflelimit = shufflelimit;
         try {
             Files.write(Path.of(path),file.toList());
         } catch (IOException e) {
@@ -334,12 +328,17 @@ public class GameController implements GameListener {
             fallstate = Integer.parseInt(fl[Constant.CHESSBOARD_ROW_SIZE.getNum()+2].split("\r")[0]);
             swapstate = Integer.parseInt(fl[Constant.CHESSBOARD_ROW_SIZE.getNum()+3].split("\r")[0]);
             goal = Integer.parseInt(fl[Constant.CHESSBOARD_ROW_SIZE.getNum()+4].split("\r")[0]);
+            level = Integer.parseInt(fl[Constant.CHESSBOARD_ROW_SIZE.getNum()+5].split("\r")[0]);
+            shufflelimit = Integer.parseInt(fl[Constant.CHESSBOARD_ROW_SIZE.getNum()+6].split("\r")[0]);
             view.initiateChessComponent(model);
             view.repaint();
             this.scoreLabel.setText("Score:" + score);
             this.swaplimitLabel.setText("Swap" + swaplimit);
             this.goalLabel.setText("goal:" + goal);
-        }catch (NumberFormatException e){
+            frame.shuffle.setText("Shuffle limit:"+shufflelimit);
+
+        }
+            catch (NumberFormatException e){
             System.out.println("102");
             JOptionPane.showMessageDialog(frame,"102","存档损坏",JOptionPane.ERROR_MESSAGE);
         }

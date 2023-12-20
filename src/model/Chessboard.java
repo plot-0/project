@@ -21,6 +21,10 @@ public class Chessboard {
         initPieces();
     }
 
+    public void setGrid(Cell[][] grid) {
+        this.grid = grid;
+    }
+
     private void initGrid() {
         for (int i = 0; i < Constant.CHESSBOARD_ROW_SIZE.getNum(); i++) {
             for (int j = 0; j < Constant.CHESSBOARD_COL_SIZE.getNum(); j++) {
@@ -76,7 +80,6 @@ public class Chessboard {
             setChessPiece(point2, p1);
     }
     public boolean canSwap(ChessboardPoint point1,ChessboardPoint point2,Cell[][] grid){
-        //todo:  check
         int [][] eliminate = search();
         if (eliminate[point1.getRow()][point1.getCol()]==1){
             return true;
@@ -87,6 +90,15 @@ public class Chessboard {
         else{
             return false;
         }
+    }
+    public Cell[][] reverse(Cell[][] grid){
+        Cell[][] reverse = new Cell[Constant.CHESSBOARD_COL_SIZE.getNum()][Constant.CHESSBOARD_ROW_SIZE.getNum()];
+        for (int j = 0; j <Constant.CHESSBOARD_COL_SIZE.getNum(); j++) {
+            for (int i = 0;i<Constant.CHESSBOARD_ROW_SIZE.getNum(); i++) {
+                reverse[j][i] = getGridAt(new ChessboardPoint(i,j));
+            }
+        }
+        return reverse;
     }
     public int[][] search(){
         int sum = 0;
@@ -217,4 +229,5 @@ public class Chessboard {
         sb.setLength(0);
         return saveLines;
     }
+
 }
