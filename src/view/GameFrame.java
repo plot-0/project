@@ -2,6 +2,7 @@ package view;
 
 import controller.GameController;
 import controller.Hint;
+import controller.Redo;
 import model.Chessboard;
 import model.ChessboardPoint;
 
@@ -56,6 +57,7 @@ public class GameFrame extends JFrame {
         addSaveButton();
         addMenuButton();
         addHintButton();
+        addRedoButton();
     }
 
     public ChessboardComponent getChessboardComponent() {
@@ -80,6 +82,11 @@ public class GameFrame extends JFrame {
     public void setGoalLabel(int goal){
         goalLabel.setText("Goal:"+goal);
     }
+
+    public void setScoreLabel(int score) {
+        scoreLabel.setText("Score:"+score);
+    }
+
     /**
      * 在游戏面板中添加棋盘
      */
@@ -153,7 +160,10 @@ public class GameFrame extends JFrame {
 
     private void addSwapConfirmButton() {
         JButton button = new JButton("Confirm Swap");
-        button.addActionListener((e) -> chessboardComponent.swapChess());
+        button.addActionListener(e -> {
+            //this.redo = new Redo(gameController.model.convertBoardToList(),this,gameController);
+            chessboardComponent.swapChess();
+        });
         button.setLocation(HEIGTH, HEIGTH / 10 + 200);
         button.setSize(200, 60);
         button.setFont(new Font("Rockwell", Font.BOLD, 20));
@@ -257,6 +267,22 @@ public class GameFrame extends JFrame {
             }
             else{
                 JOptionPane.showMessageDialog(this,"没有可交换的点");
+            }
+        });
+    }
+    public void addRedoButton(){
+        JButton button = new JButton("Redo");
+        button.setLocation(HEIGTH-480,HEIGTH/10 + 600);
+        button.setSize(200,60);
+        button.setFont(new Font("Rockwell", Font.BOLD, 20));
+        add(button);
+
+        button.addActionListener(e -> {
+            if (gameController.redo!=null){
+                gameController.redo.load();
+            }
+            else{
+                JOptionPane.showMessageDialog(this,"无法撤销");
             }
         });
     }

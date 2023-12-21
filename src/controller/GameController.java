@@ -26,7 +26,7 @@ public class GameController implements GameListener {
     //修改了构造方法，获取size
     private final int CHESS_SIZE;
     public Chessboard model;
-    private ChessboardComponent view;
+    public ChessboardComponent view;
     private GameFrame frame;
     public int level;
     public static int fallstate = 1;
@@ -43,6 +43,7 @@ public class GameController implements GameListener {
     private JLabel swaplimitLabel;
     public JLabel initswaplimitLabel;
     private JLabel goalLabel;
+    public Redo redo;
 
 
     public void setScoreLabel(JLabel scoreLabel) {
@@ -142,6 +143,7 @@ public class GameController implements GameListener {
     @Override
     public void onPlayerSwapChess() {
         // TODO: Init your swap function here.
+        this.redo = new Redo(model.convertBoardToList(),frame,this);
         System.out.println("swapstate:"+swapstate);
         if(selectedPoint!=null && selectedPoint2!=null && swapstate == 1 && swaplimit>0 ){
             model.swapChessPiece(selectedPoint,selectedPoint2);
