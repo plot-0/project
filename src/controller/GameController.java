@@ -39,8 +39,8 @@ public class GameController implements GameListener {
     // Record whether there is a selected piece before
     public ChessboardPoint selectedPoint;
     public ChessboardPoint selectedPoint2;
-    private JLabel scoreLabel;
-    private JLabel swaplimitLabel;
+    public JLabel scoreLabel;
+    JLabel swaplimitLabel;
     public JLabel initswaplimitLabel;
     private JLabel goalLabel;
     public Redo redo;

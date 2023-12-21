@@ -38,6 +38,10 @@ public class Redo {
             }
         }
         controller.view.initiateChessComponent(controller.model);
+        controller.score = score;
+        controller.swaplimit = swaplimit;
+        controller.scoreLabel.setText("Score:"+score);
+        controller.swaplimitLabel.setText("Swap:"+swaplimit);
         frame.setSwaplimitLabel(swaplimit);
         frame.setScoreLabel(score);
         controller.view.repaint();
