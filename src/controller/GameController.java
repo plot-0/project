@@ -27,7 +27,7 @@ public class GameController implements GameListener {
     private final int CHESS_SIZE;
     public Chessboard model;
     public ChessboardComponent view;
-    private GameFrame frame;
+    public GameFrame frame;
     public int level;
     public static int fallstate = 1;
     public int swapstate = 1;
@@ -145,7 +145,7 @@ public class GameController implements GameListener {
         // TODO: Init your swap function here.
         this.redo = new Redo(model.convertBoardToList(),frame,this);
         System.out.println("swapstate:"+swapstate);
-        if(selectedPoint!=null && selectedPoint2!=null && swapstate == 1 && swaplimit>0 ){
+        if(selectedPoint!=null && selectedPoint2!=null && swaplimit>0 ){
             model.swapChessPiece(selectedPoint,selectedPoint2);
             ChessComponent chess1 = view.removeChessComponentAtGrid(selectedPoint);
             ChessComponent chess2 = view.removeChessComponentAtGrid(selectedPoint2);
@@ -154,7 +154,7 @@ public class GameController implements GameListener {
             chess1.repaint();
             chess2.repaint();
         }
-        if (!model.canSwap(selectedPoint,selectedPoint2, model.getGrid()) && swapstate == 1){
+        if (!model.canSwap(selectedPoint,selectedPoint2, model.getGrid())){
             model.swapChessPiece(selectedPoint,selectedPoint2);
             ChessComponent chess1 = view.removeChessComponentAtGrid(selectedPoint);
             ChessComponent chess2 = view.removeChessComponentAtGrid(selectedPoint2);

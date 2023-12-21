@@ -247,7 +247,7 @@ public class GameFrame extends JFrame {
         add(button);
 
         button.addActionListener(e -> {
-            Hint hint = new Hint(gameController.model);
+            Hint hint = new Hint(gameController);
             ArrayList<ChessboardPoint> points = hint.clickHint();
             if (!points.isEmpty()){
                 ChessboardPoint point1 = points.get(0);

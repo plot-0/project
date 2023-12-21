@@ -12,8 +12,10 @@ import java.util.ArrayList;
 public class Hint {
     public static Chessboard model;
     public static ArrayList<ChessboardPoint> points;//提示的交换点
-    public Hint(Chessboard model) {
-        Hint.model = model;
+    public static GameController controller;
+    public Hint(GameController controller) {
+        Hint.controller = controller;
+        Hint.model = controller.model;
     }
     //寻找图中所有的可交换点
     public static ArrayList<ChessboardPoint> canSwapChesses(){
@@ -44,33 +46,34 @@ public class Hint {
     }
     public int eliminateScore(ChessboardPoint point1,ChessboardPoint point2){
         int score = 0;
+        controller.redo = new Redo(model.convertBoardToList(),controller.frame,controller);
         Chessboard board = model;
         board.swapChessPiece(point1,point2);
-        //while (board.eliminateNum(board.getGrid())!=0 || !board.nullPoints(board.getGrid()).isEmpty()){
-            board = model;
+        while (board.eliminateNum(board.getGrid())!=0 || !board.nullPoints(board.getGrid()).isEmpty()){
             score += 10*board.eliminateNum(board.getGrid());
-//            //清除
-//            for (int i = 0; i < Constant.CHESSBOARD_ROW_SIZE.getNum(); i++) {
-//                for (int j = 0; j < Constant.CHESSBOARD_COL_SIZE.getNum(); j++) {
-//                    if (board.search()[i][j]==1){
-//                        board.removeChessPiece(new ChessboardPoint(i,j));
-//                    }
-//                }
-//            }
-//            //降落
-//            Cell[][] reverse = board.reverse(board.getGrid());
-//            for (int j = 0; j <Constant.CHESSBOARD_COL_SIZE.getNum(); j++) {
-//                for (int e=0;e< board.nullInCol(reverse[j]);e++){
-//                    for (int i = Constant.CHESSBOARD_ROW_SIZE.getNum()-2; i >=0 ; i--) {
-//                        compare(new ChessboardPoint(i,j));
-//                    }
-//                }
-//            }
-//            if (board.eliminateNum(board.getGrid())==0){
-//                break;
-//            }
-//        }
-        board.swapChessPiece(point1,point2);
+            int[][] eliminate = board.search();
+            //清除
+            for (int i = 0; i < Constant.CHESSBOARD_ROW_SIZE.getNum(); i++) {
+                for (int j = 0; j < Constant.CHESSBOARD_COL_SIZE.getNum(); j++) {
+                    if (eliminate[i][j]==1){
+                        board.removeChessPiece(new ChessboardPoint(i,j));
+                    }
+                }
+            }
+            //降落
+            Cell[][] reverse = board.reverse(board.getGrid());
+            for (int j = 0; j <Constant.CHESSBOARD_COL_SIZE.getNum(); j++) {
+                for (int e=0;e< board.nullInCol(reverse[j]);e++){
+                    for (int i = Constant.CHESSBOARD_ROW_SIZE.getNum()-2; i >=0 ; i--) {
+                        compare(new ChessboardPoint(i,j));
+                    }
+                }
+            }
+            if (board.eliminateNum(board.getGrid())==0){
+                break;
+            }
+        }
+        controller.redo.load();
         return score;
     }
     public void compare(ChessboardPoint point){

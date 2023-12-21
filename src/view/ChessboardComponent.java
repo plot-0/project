@@ -74,9 +74,6 @@ public class ChessboardComponent extends JComponent {
             }
         }
     }
-    public void changeColor(ChessboardPoint point,Color color){
-       gridComponents[point.getRow()][point.getCol()] = new CellComponent(color, calculatePoint(point.getRow(), point.getCol()), CHESS_SIZE);
-    }
 
     public void registerController(GameController gameController) {
         this.gameController = gameController;
