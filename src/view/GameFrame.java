@@ -242,15 +242,17 @@ public class GameFrame extends JFrame {
             if (!points.isEmpty()){
                 ChessboardPoint point1 = points.get(0);
                 ChessboardPoint point2 = points.get(1);
-                chessboardComponent.getGridComponentAt(point1).setBackground(Color.ORANGE);
-                chessboardComponent.getGridComponentAt(point2).setBackground(Color.ORANGE);
-                chessboardComponent.getGridComponentAt(point1).paintImmediately(0,0,getWidth(),getHeight());
-                chessboardComponent.getGridComponentAt(point2).paintImmediately(0,0,getWidth(),getHeight());
+                chessboardComponent.getChessComponentAtGrid(point1).setSelected(true);
+                chessboardComponent.getChessComponentAtGrid(point2).setSelected(true);
+                chessboardComponent.getChessComponentAtGrid(point1).paintImmediately(0,0,getWidth(),getHeight());
+                chessboardComponent.getChessComponentAtGrid(point2).paintImmediately(0,0,getWidth(),getHeight());
                 try {
                     Thread.sleep(500);
                 } catch (InterruptedException ex) {
                     throw new RuntimeException(ex);
                 }
+                chessboardComponent.getChessComponentAtGrid(point1).setSelected(false);
+                chessboardComponent.getChessComponentAtGrid(point2).setSelected(false);
                 repaint();
             }
             else{

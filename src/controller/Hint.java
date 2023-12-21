@@ -80,6 +80,9 @@ public class Hint {
     }
     public ArrayList<ChessboardPoint> hintPoints(ArrayList<ChessboardPoint> chesses){
         points = new ArrayList<ChessboardPoint>();
+        if (chesses.isEmpty()){
+            return points;
+        }
         points.add(new ChessboardPoint(0,0));
         points.add(new ChessboardPoint(0,0));
         int score = 0;

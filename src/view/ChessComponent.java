@@ -48,5 +48,6 @@ public class ChessComponent extends JComponent {
             g.setColor(Color.gray);
             g.drawOval(0, 0, getWidth(), getHeight());
         }
+
     }
 }
