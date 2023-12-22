@@ -112,6 +112,11 @@ public class GameController implements GameListener {
                 for (int i = Constant.CHESSBOARD_ROW_SIZE.getNum()-2; i >=0 ; i--) {
                     compare(new ChessboardPoint(i,j));
                 }
+                try {
+                    Thread.sleep(30);
+                } catch (InterruptedException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         }
     }
@@ -121,8 +126,10 @@ public class GameController implements GameListener {
             ChessComponent chess1 = view.removeChessComponentAtGrid(point);
             model.swapChessPiece(point,new ChessboardPoint(point.getRow()+1, point.getCol()));
             view.setChessComponentAtGrid(new ChessboardPoint(point.getRow()+1, point.getCol()),chess1);
-            chess1.repaint();
-            view.getGridComponentAt(point).repaint();
+            chess1.paintImmediately(0,0,frame.getWidth(),frame.getHeight());
+            view.getGridComponentAt(point).paintImmediately(0,0,frame.getWidth(),frame.getHeight());
+            view.paintImmediately(0,0,frame.getWidth(),frame.getHeight());
+
         }
     }
     public void regenerate(Cell[][] grid){
@@ -181,7 +188,7 @@ public class GameController implements GameListener {
                     break;
                 }
                 try {
-                    Thread.sleep(300);
+                    Thread.sleep(100);
                 } catch (InterruptedException e) {
 
                 }
@@ -197,7 +204,6 @@ public class GameController implements GameListener {
         }
         else if (fallstate == 1){
             fall();
-            view.repaint();
             System.out.println("fall");
             fallstate = 0;
         }
