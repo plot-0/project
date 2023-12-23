@@ -13,6 +13,7 @@ public class Hint {
     public static Chessboard model;
     public static ArrayList<ChessboardPoint> points;//提示的交换点
     public static GameController controller;
+    public static Redo redo;
     public Hint(GameController controller) {
         Hint.controller = controller;
         Hint.model = controller.model;
@@ -46,7 +47,7 @@ public class Hint {
     }
     public int eliminateScore(ChessboardPoint point1,ChessboardPoint point2){
         int score = 0;
-        controller.redo = new Redo(model.convertBoardToList(),controller.frame,controller);
+        redo = new Redo(model.convertBoardToList(),controller.frame,controller);
         Chessboard board = model;
         board.swapChessPiece(point1,point2);
         while (board.eliminateNum(board.getGrid())!=0 || !board.nullPoints(board.getGrid()).isEmpty()){
@@ -73,7 +74,7 @@ public class Hint {
                 break;
             }
         }
-        controller.redo.load();
+        redo.load();
         return score;
     }
     public void compare(ChessboardPoint point){
