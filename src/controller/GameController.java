@@ -149,7 +149,6 @@ public class GameController implements GameListener {
 
     @Override
     public void onPlayerSwapChess() {
-        // TODO: Init your swap function here.
         this.redo = new Redo(model.convertBoardToList(),frame,this);
         System.out.println("swapstate:"+swapstate);
         if(selectedPoint!=null && selectedPoint2!=null && swaplimit>0 ){
@@ -158,8 +157,9 @@ public class GameController implements GameListener {
             ChessComponent chess2 = view.removeChessComponentAtGrid(selectedPoint2);
             view.setChessComponentAtGrid(selectedPoint,chess2);
             view.setChessComponentAtGrid(selectedPoint2,chess1);
-            chess1.repaint();
-            chess2.repaint();
+            chess1.paintImmediately(0,0,frame.getWidth(),frame.getHeight());
+            chess2.paintImmediately(0,0,frame.getWidth(),frame.getHeight());
+            view.paintImmediately(0,0,frame.getWidth(),frame.getHeight());
         }
         if (!model.canSwap(selectedPoint,selectedPoint2, model.getGrid())){
             model.swapChessPiece(selectedPoint,selectedPoint2);
@@ -180,6 +180,11 @@ public class GameController implements GameListener {
             swaplimit -= 1;
             this.swaplimitLabel.setText("Swap:"+swaplimit);
             while (mode && (model.eliminateNum(model.getGrid())!=0 || model.nullPoints(model.getGrid()).size()>0)){
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+
+                }
                 onPlayerNextStep();
                 if (detectSucceed()){
                     break;
@@ -187,11 +192,7 @@ public class GameController implements GameListener {
                 if (detectFail()){
                     break;
                 }
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
 
-                }
                 view.paintImmediately(0,0,frame.getWidth(),frame.getHeight());
             }
         }
