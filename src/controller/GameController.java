@@ -116,7 +116,7 @@ public class GameController implements GameListener {
                     compare(new ChessboardPoint(i,j));
                 }
                 try {
-                    Thread.sleep(10);
+                    Thread.sleep(20);
                 } catch (InterruptedException ex) {
                     throw new RuntimeException(ex);
                 }
@@ -321,7 +321,6 @@ public class GameController implements GameListener {
     }
 
     public void loadGameFromFile(String path) {
-        view.removeAllChessComponentsAtGrids();
         StringBuilder sb = new StringBuilder();
         String file = null;
         try {
@@ -351,6 +350,7 @@ public class GameController implements GameListener {
             goal = Integer.parseInt(fl[Constant.CHESSBOARD_ROW_SIZE.getNum()+4].split("\r")[0]);
             level = Integer.parseInt(fl[Constant.CHESSBOARD_ROW_SIZE.getNum()+5].split("\r")[0]);
             shufflelimit = Integer.parseInt(fl[Constant.CHESSBOARD_ROW_SIZE.getNum()+6].split("\r")[0]);
+            view.removeAllChessComponentsAtGrids();
             view.initiateChessComponent(model);
             view.repaint();
             this.scoreLabel.setText("Score:" + score);
