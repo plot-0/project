@@ -398,7 +398,7 @@ public class GameController implements GameListener {
         return false;
     }
     private boolean detectFail(){
-        if (swaplimit==0 && model.eliminateNum(model.getGrid())==0 && score<goal){
+        if (swaplimit==0 && model.eliminateNum(model.getGrid())==0 && model.nullPoints(model.getGrid()).isEmpty() && score<goal){
             Object[] option = {"再来一局","返回标题"};
             int op = JOptionPane.showOptionDialog(frame,"fail","结果",JOptionPane.YES_NO_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE,null,option,option[0]);
             if (op==0 && level==1){

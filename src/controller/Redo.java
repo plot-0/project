@@ -25,7 +25,6 @@ public class Redo {
 
     public void load(){
         controller.view.removeAllChessComponentsAtGrids();
-        //String fl[] = board.toString().split("\n");
         for (int i = 0; i< Constant.CHESSBOARD_ROW_SIZE.getNum(); i++){
             String[] line = board.get(i).split(" ");
             for (int j=0;j<Constant.CHESSBOARD_COL_SIZE.getNum();j++){
