@@ -29,12 +29,14 @@ public class GameFrame extends JFrame {
     private JLabel swaplimitLabel;
     private JLabel goalLabel;
     private Menu menu = new Menu(1100,810);
+    public Cat cat;
     public static boolean mode = false;
     public GameFrame(int width, int height,boolean mode) {
         setTitle("猫猫陪你玩"); //设置标题
         this.WIDTH = width;
         this.HEIGTH = height;
         this.ONE_CHESS_SIZE = (HEIGTH * 4 / 5) / 9;
+        cat = new Cat();
         GameFrame.mode = mode;
 
         setSize(WIDTH, HEIGTH);

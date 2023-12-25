@@ -116,7 +116,7 @@ public class GameController implements GameListener {
                     compare(new ChessboardPoint(i,j));
                 }
                 try {
-                    Thread.sleep(30);
+                    Thread.sleep(10);
                 } catch (InterruptedException ex) {
                     throw new RuntimeException(ex);
                 }
@@ -340,7 +340,7 @@ public class GameController implements GameListener {
                         model.setChessPiece(new ChessboardPoint(i,j),null);
                     }
                     else{
-                        model.setChessPiece(new ChessboardPoint(i,j),new ChessPiece(Constant.colorMap3.get(Integer.parseInt(line[j]))));
+                        model.setChessPiece(new ChessboardPoint(i,j),new ChessPiece(Constant.idMap3.get(Integer.parseInt(line[j]))));
                     }
                 }
             }

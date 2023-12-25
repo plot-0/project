@@ -20,8 +20,8 @@ public class CellComponent extends JPanel {
 
     @Override
     protected void paintComponent(Graphics g) {
-        super.paintComponents(g);
         g.setColor(Color.white);
         g.fillRect(1, 1, this.getWidth()-2, this.getHeight()-2);
+        super.paintComponents(g);
     }
 }

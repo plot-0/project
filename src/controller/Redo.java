@@ -6,7 +6,6 @@ import model.Constant;
 import view.GameFrame;
 
 import java.util.List;
-import java.util.Objects;
 
 public class Redo {
     List<String> board;
@@ -33,7 +32,7 @@ public class Redo {
                     controller.model.setChessPiece(new ChessboardPoint(i,j),null);
                 }
                 else{
-                    controller.model.setChessPiece(new ChessboardPoint(i,j),new ChessPiece(Constant.colorMap3.get(Integer.parseInt(line[j]))));
+                    controller.model.setChessPiece(new ChessboardPoint(i,j),new ChessPiece(Constant.idMap3.get(Integer.parseInt(line[j]))));
                 }
             }
         }
