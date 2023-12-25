@@ -31,7 +31,7 @@ public class GameFrame extends JFrame {
     private Menu menu = new Menu(1100,810);
     public static boolean mode = false;
     public GameFrame(int width, int height,boolean mode) {
-        setTitle("2023 CS109 Project Demo"); //设置标题
+        setTitle("猫猫陪你玩"); //设置标题
         this.WIDTH = width;
         this.HEIGTH = height;
         this.ONE_CHESS_SIZE = (HEIGTH * 4 / 5) / 9;
@@ -58,6 +58,20 @@ public class GameFrame extends JFrame {
         addMenuButton();
         addHintButton();
         addRedoButton();
+
+        //menu美化
+        Toolkit toolkit=Toolkit.getDefaultToolkit();
+        Image icon = toolkit.getImage("resource/cat1.jpg");
+        this.setIconImage(icon);
+        ImageIcon backbround = new ImageIcon("resource/img.png");
+        Image image = backbround.getImage();
+        Image smallImage = image.getScaledInstance(WIDTH, HEIGTH, Image.SCALE_FAST);
+        ImageIcon backbrounds = new ImageIcon(smallImage);
+        JLabel jlabel = new JLabel(backbrounds);
+        jlabel.setBounds(0,0, getWidth(),getHeight());
+        add(jlabel);
+
+
     }
 
     public ChessboardComponent getChessboardComponent() {
@@ -155,6 +169,7 @@ public class GameFrame extends JFrame {
         button.setSize(200, 60);
         button.setFont(new Font("Rockwell", Font.BOLD, 20));
         shuffle = button;
+        button.setBackground(Color.white);
         add(button);
     }
 
@@ -167,6 +182,7 @@ public class GameFrame extends JFrame {
         button.setLocation(HEIGTH, HEIGTH / 10 + 200);
         button.setSize(200, 60);
         button.setFont(new Font("Rockwell", Font.BOLD, 20));
+        button.setBackground(Color.orange);
         add(button);
     }
 
@@ -178,6 +194,7 @@ public class GameFrame extends JFrame {
         button.setLocation(HEIGTH, HEIGTH / 10 + 280);
         button.setSize(200, 60);
         button.setFont(new Font("Rockwell", Font.BOLD, 20));
+        button.setBackground(Color.white);
         add(button);
     }
 
@@ -186,6 +203,7 @@ public class GameFrame extends JFrame {
         button.setLocation(HEIGTH, HEIGTH / 10 + 360);
         button.setSize(200, 60);
         button.setFont(new Font("Rockwell", Font.BOLD, 20));
+        button.setBackground(Color.orange);
         add(button);
 
         button.addActionListener(e -> {
@@ -207,6 +225,7 @@ public class GameFrame extends JFrame {
         button.setLocation(HEIGTH, HEIGTH / 10 + 440);
         button.setSize(200, 60);
         button.setFont(new Font("Rockwell", Font.BOLD, 20));
+        button.setBackground(Color.white);
         add(button);
 
         button.addActionListener(e -> {
@@ -222,6 +241,7 @@ public class GameFrame extends JFrame {
         button.setLocation(HEIGTH, HEIGTH / 10 + 520);
         button.setSize(200, 60);
         button.setFont(new Font("Rockwell", Font.BOLD, 20));
+        button.setBackground(Color.orange);
         add(button);
 
         button.addActionListener(e -> {
@@ -233,6 +253,7 @@ public class GameFrame extends JFrame {
         button.setLocation(HEIGTH,HEIGTH/10 + 600);
         button.setSize(200,60);
         button.setFont(new Font("Rockwell", Font.BOLD, 20));
+        button.setBackground(Color.white);
         add(button);
 
         button.addActionListener(e -> {
@@ -244,6 +265,7 @@ public class GameFrame extends JFrame {
         button.setLocation(HEIGTH-260,HEIGTH/10 + 600);
         button.setSize(200,60);
         button.setFont(new Font("Rockwell", Font.BOLD, 20));
+        button.setBackground(Color.orange);
         add(button);
 
         button.addActionListener(e -> {
@@ -275,6 +297,7 @@ public class GameFrame extends JFrame {
         button.setLocation(HEIGTH-480,HEIGTH/10 + 600);
         button.setSize(200,60);
         button.setFont(new Font("Rockwell", Font.BOLD, 20));
+        button.setBackground(Color.white);
         add(button);
 
         button.addActionListener(e -> {

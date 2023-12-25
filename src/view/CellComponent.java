@@ -15,13 +15,13 @@ public class CellComponent extends JPanel {
         setLayout(null);
         setLocation(location);
         setSize(size, size);
-        this.background = background;
+        this.background = Color.pink;
     }
 
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponents(g);
-        g.setColor(background);
+        g.setColor(Color.white);
         g.fillRect(1, 1, this.getWidth()-2, this.getHeight()-2);
     }
 }

@@ -14,6 +14,8 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 /**
  * Controller is the connection between model and view,
@@ -35,7 +37,8 @@ public class GameController implements GameListener {
     public static int shufflelimit = 3;
     public static int goal;
     public static boolean mode = false;
-    public int score;
+    public int
+            score;
     // Record whether there is a selected piece before
     public ChessboardPoint selectedPoint;
     public ChessboardPoint selectedPoint2;
@@ -149,6 +152,7 @@ public class GameController implements GameListener {
 
     @Override
     public void onPlayerSwapChess() {
+        playSound("resource/swap.wav");
         this.redo = new Redo(model.convertBoardToList(),frame,this);
         System.out.println("swapstate:"+swapstate);
         if(selectedPoint!=null && selectedPoint2!=null && swaplimit>0 ){
@@ -197,16 +201,24 @@ public class GameController implements GameListener {
             }
         }
     }
+    public static Future<?> playSound(String path) {
+        return Executors.newSingleThreadExecutor().submit(() -> {
+            new AudioPlayer().play(path);
+        });
+    }
 
     @Override
     public void onPlayerNextStep() {
         if (model.eliminateNum(model.getGrid())!=0){
             eliminate(model.search());
+            playSound("resource/swapsound.wav");
         }
         else if (fallstate == 1){
             fall();
             System.out.println("fall");
             fallstate = 0;
+            playSound("resource/falll.wav");
+
         }
         else{
             regenerate(model.getGrid());
@@ -351,7 +363,11 @@ public class GameController implements GameListener {
             System.out.println("102");
             JOptionPane.showMessageDialog(frame,"102","存档损坏",JOptionPane.ERROR_MESSAGE);
         }
-        catch (NullPointerException e){
+            catch (ArrayIndexOutOfBoundsException e){
+                System.out.println("102");
+                JOptionPane.showMessageDialog(frame,"102","存档损坏",JOptionPane.ERROR_MESSAGE);
+        }
+            catch (NullPointerException e){
             System.out.println("103");
             JOptionPane.showMessageDialog(frame,"103","存档损坏",JOptionPane.ERROR_MESSAGE);
         }
@@ -375,6 +391,7 @@ public class GameController implements GameListener {
     }
     private boolean detectSucceed(){
         if (level<=2 && score>=goal){
+            playSound("resource/nextlevelsound.wav");
             Object[] option = {"进入下一关","返回标题"};
             int op = JOptionPane.showOptionDialog(frame,"succeed","结果",JOptionPane.YES_NO_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE,null,option,option[0]);
             if (op==0 && level==1){
@@ -399,6 +416,7 @@ public class GameController implements GameListener {
     }
     private boolean detectFail(){
         if (swaplimit==0 && model.eliminateNum(model.getGrid())==0 && model.nullPoints(model.getGrid()).isEmpty() && score<goal){
+            playSound("resource/fail.wav");
             Object[] option = {"再来一局","返回标题"};
             int op = JOptionPane.showOptionDialog(frame,"fail","结果",JOptionPane.YES_NO_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE,null,option,option[0]);
             if (op==0 && level==1){

@@ -9,8 +9,9 @@ import java.awt.*;
 public class Menu extends JFrame {
     private final int WIDTH;
     private final int HEIGTH;
+
     public Menu(int width,int height){
-        setTitle("2023 CS109 Project Demo"); //设置标题
+        setTitle("猫猫消消乐"); //设置标题
         this.WIDTH = width;
         this.HEIGTH = height;
 
@@ -22,6 +23,19 @@ public class Menu extends JFrame {
         addStartButton();
         addExitButton();
         addAutoModeButton();
+        addtitleLabel();
+
+        //menu美化
+        Toolkit toolkit=Toolkit.getDefaultToolkit();
+        Image icon = toolkit.getImage("resource/cat1.jpg");
+        this.setIconImage(icon);
+        ImageIcon backbround = new ImageIcon("resource/img.png");
+        Image image = backbround.getImage();
+        Image smallImage = image.getScaledInstance(WIDTH, HEIGTH, Image.SCALE_FAST);
+        ImageIcon backbrounds = new ImageIcon(smallImage);
+        JLabel jlabel = new JLabel(backbrounds);
+        jlabel.setBounds(0,0, getWidth(),getHeight());
+        add(jlabel);
     }
 
     private void addAutoModeButton() {
@@ -54,7 +68,14 @@ public class Menu extends JFrame {
     }
 
 
-
+    private void addtitleLabel() {
+        JLabel titleLabel = new JLabel("猫猫消消乐");
+        titleLabel.setLocation(WIDTH/2-245, HEIGTH/10);
+        titleLabel.setSize(500, 200);
+        titleLabel.setFont(new Font("华文琥珀",Font.PLAIN, 100));
+        titleLabel.setForeground(Color.white);
+        add(titleLabel);
+    }
     private void addExitButton() {
         JButton button = new JButton("Exit");
         button.setLocation(WIDTH/2-100, HEIGTH / 10 + 360);
