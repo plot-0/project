@@ -2,7 +2,6 @@ package view;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseEvent;
 
 /**
  * This is the equivalent of the Cell class,
@@ -20,10 +19,9 @@ public class CellComponent extends JPanel {
     }
 
     @Override
-    public void paintComponent(Graphics g) {
+    protected void paintComponent(Graphics g) {
         g.setColor(Color.white);
         g.fillRect(1, 1, this.getWidth()-2, this.getHeight()-2);
         super.paintComponents(g);
     }
-
 }
