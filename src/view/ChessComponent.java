@@ -29,7 +29,7 @@ public class ChessComponent extends JComponent {
         setLocation(2, 2);
         setVisible(true);
         this.chessPiece = chessPiece;
-        enableEvents(AWTEvent.MOUSE_EVENT_MASK);
+        //enableEvents(AWTEvent.MOUSE_EVENT_MASK);
     }
 
     public boolean isSelected() {
@@ -79,21 +79,22 @@ public class ChessComponent extends JComponent {
 
     }
     protected void processMouseEvent(MouseEvent e) {
+        if (e.getID() == MouseEvent.MOUSE_EXITED){
+            enableEvents(AWTEvent.MOUSE_EVENT_MASK);
+            this.setEntered(false);
+            this.setExited(true);
+            this.paintImmediately(0,0,getWidth(),getHeight());
+        }
         if (e.getID() == MouseEvent.MOUSE_ENTERED){
             this.setEntered(true);
             this.setExited(false);
             this.paintImmediately(0,0,getWidth(),getHeight());
         }
-        if (e.getID() == MouseEvent.MOUSE_EXITED){
+        if (e.getID() == MouseEvent.MOUSE_PRESSED){
             this.setEntered(false);
             this.setExited(true);
             this.paintImmediately(0,0,getWidth(),getHeight());
-        }
-        else{
             disableEvents(AWTEvent.MOUSE_EVENT_MASK);
-            this.setEntered(false);
-            this.setExited(true);
-            this.paintImmediately(0,0,getWidth(),getHeight());
         }
     }
 

@@ -290,7 +290,7 @@ public class GameFrame extends JFrame {
                 repaint();
             }
             else{
-                JOptionPane.showMessageDialog(this,"没有可交换的点");
+                JOptionPane.showMessageDialog(this,"没有可交换的点,尝试使用restart或shuffle");
             }
         });
     }
