@@ -21,6 +21,10 @@ public class ChessboardComponent extends JComponent {
     private final int CHESS_SIZE;
     private final Set<ChessboardPoint> riverCell = new HashSet<>();
 
+    public GameController getGameController() {
+        return gameController;
+    }
+
     private GameController gameController;
 
 
@@ -64,8 +68,7 @@ public class ChessboardComponent extends JComponent {
                     cell = new CellComponent(Color.cyan, calculatePoint(i, j), CHESS_SIZE);
                     cell.setOpaque(true);
                     this.add(cell);
-                }
-                else {
+                } else {
                     cell = new CellComponent(Color.lightGray, calculatePoint(i, j), CHESS_SIZE);
                     cell.setOpaque(true);
                     this.add(cell);
@@ -83,11 +86,11 @@ public class ChessboardComponent extends JComponent {
         getGridComponentAt(point).add(chess);
     }
 
-    public void removeAllChessComponentsAtGrids(){
-        for (int i=0;i< CHESSBOARD_ROW_SIZE.getNum();i++){
-            for (int j=0;j< CHESSBOARD_COL_SIZE.getNum();j++){
-                if (getGridComponentAt(new ChessboardPoint(i,j)).getComponents().length!=0){
-                    this.removeChessComponentAtGrid(new ChessboardPoint(i,j));
+    public void removeAllChessComponentsAtGrids() {
+        for (int i = 0; i < CHESSBOARD_ROW_SIZE.getNum(); i++) {
+            for (int j = 0; j < CHESSBOARD_COL_SIZE.getNum(); j++) {
+                if (getGridComponentAt(new ChessboardPoint(i, j)).getComponents().length != 0) {
+                    this.removeChessComponentAtGrid(new ChessboardPoint(i, j));
                 }
             }
         }
@@ -101,7 +104,8 @@ public class ChessboardComponent extends JComponent {
         chess.setSelected(false);
         return chess;
     }
-    public ChessComponent getChessComponentAtGrid(ChessboardPoint point){
+
+    public ChessComponent getChessComponentAtGrid(ChessboardPoint point) {
         ChessComponent chess = (ChessComponent) getGridComponentAt(point).getComponents()[0];
         getGridComponentAt(point).revalidate();
         return chess;
@@ -112,18 +116,19 @@ public class ChessboardComponent extends JComponent {
     }
 
     private ChessboardPoint getChessboardPoint(Point point) {
-        System.out.println("[" + point.y/CHESS_SIZE +  ", " +point.x/CHESS_SIZE + "] Clicked");
-        return new ChessboardPoint(point.y/CHESS_SIZE, point.x/CHESS_SIZE);
+        //System.out.println("[" + point.y/CHESS_SIZE +  ", " +point.x/CHESS_SIZE + "] Clicked");
+        return new ChessboardPoint(point.y / CHESS_SIZE, point.x / CHESS_SIZE);
     }
+
     public Point calculatePoint(int row, int col) {
         return new Point(col * CHESS_SIZE, row * CHESS_SIZE);
     }
 
-    public void swapChess(){
+    public void swapChess() {
         gameController.onPlayerSwapChess();
     }
 
-    public void nextStep(){
+    public void nextStep() {
         gameController.onPlayerNextStep();
     }
 
@@ -142,12 +147,14 @@ public class ChessboardComponent extends JComponent {
                 System.out.print("None chess here and ");
                 gameController.onPlayerClickCell(getChessboardPoint(e.getPoint()), (CellComponent) clickedComponent);
             } else {
-                System.out.print("One chess"+ gameController.model.getChessPieceAt(getChessboardPoint(e.getPoint())).getName()+ "here and ");
+                System.out.print("One chess" + gameController.model.getChessPieceAt(getChessboardPoint(e.getPoint())).getName() + "here and \n");
                 gameController.onPlayerClickChessPiece(getChessboardPoint(e.getPoint()), (ChessComponent) clickedComponent.getComponents()[0]);
             }
-            if (gameController.mode && gameController.selectedPoint!=null && gameController.selectedPoint2!=null){
+            if (gameController.mode && gameController.selectedPoint != null && gameController.selectedPoint2 != null) {
                 swapChess();
             }
         }
+
+
     }
 }
