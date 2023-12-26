@@ -196,7 +196,7 @@ public class GameController implements GameListener {
             this.swaplimitLabel.setText("Swap:" + swaplimit);
             while (mode && (model.eliminateNum(model.getGrid()) != 0 || model.nullPoints(model.getGrid()).size() > 0)) {
                 try {
-                    Thread.sleep(100);
+                    Thread.sleep(30);
                 } catch (InterruptedException e) {
 
                 }
